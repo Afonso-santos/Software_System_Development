@@ -1,0 +1,7 @@
+# Ignore all latex build and aux files
+Fase 1/report/output/*
+Fase 2/report/output/*
+
+# Except the pdf
+!Fase 1/report/output/*.pdf
+!Fase 2/report/output/*.pdf
