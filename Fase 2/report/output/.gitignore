@@ -1,0 +1,11 @@
+*.log          # LaTeX log
+*.aux          # LaTeX aux
+*.lof          # List of figures
+*.lot          # List of tables
+*.toc          # Table of contents
+*.out          # Output from pdflatex
+*.ilg          # makeindex log
+*.nlo          # nomenclature
+*.nls          # nomenclature
+*.fdb_latexmk  # Latexmk
+*.fls          # Latexmk

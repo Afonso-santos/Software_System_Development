@@ -1,0 +1,43 @@
+\babel@toc {portuguese}{}\relax 
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Modelo de Análise}}{1}{figure.1.1}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagrama de Casos de Uso - Geral}}{2}{figure.2.1}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Diagrama de Casos de Uso - Gestão de Alunos, Cursos, UCs, Turnos e Salas}}{3}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Diagrama de Casos de Uso - Gestão de Preferências para UCs}}{4}{figure.2.3}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Diagrama de Casos de Uso - Alocação de Alunos a Turnos}}{4}{figure.2.4}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces \textit {Use Case} Instalar aplicação}}{5}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces \textit {Use Case} Autenticação}}{5}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces \textit {Use Case} Desautenticação}}{5}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces \textit {Use Case} Visualizar Horário}}{6}{figure.3.4}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces \textit {Use Case} Exportar Horário}}{6}{figure.3.5}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces \textit {Use Case} Publicar horários de uma seleção de alunos}}{6}{figure.3.6}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces \textit {Use Case} Importar alunos}}{7}{figure.3.7}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces \textit {Use Case} Adicionar aluno}}{7}{figure.3.8}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces \textit {Use Case} Remover uma seleção de alunos}}{7}{figure.3.9}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces \textit {Use Case} Editar aluno}}{8}{figure.3.10}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces \textit {Use Case} Importar UCs}}{8}{figure.3.11}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces \textit {Use Case} Adicionar UC}}{8}{figure.3.12}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces \textit {Use Case} Remover UC}}{9}{figure.3.13}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces \textit {Use Case} Editar UC}}{9}{figure.3.14}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces \textit {Use Case} Importar salas}}{9}{figure.3.15}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces \textit {Use Case} Adicionar sala}}{10}{figure.3.16}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces \textit {Use Case} Remover sala}}{10}{figure.3.17}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces \textit {Use Case} Editar sala}}{10}{figure.3.18}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces \textit {Use Case} Importar turnos}}{11}{figure.3.19}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces \textit {Use Case} Adicionar turno}}{11}{figure.3.20}%
+\contentsline {figure}{\numberline {3.21}{\ignorespaces \textit {Use Case} Remover turno}}{11}{figure.3.21}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces \textit {Use Case} Editar turno}}{12}{figure.3.22}%
+\contentsline {figure}{\numberline {3.23}{\ignorespaces \textit {Use Case} Importar Cursos}}{12}{figure.3.23}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces \textit {Use Case} Adicionar Curso}}{12}{figure.3.24}%
+\contentsline {figure}{\numberline {3.25}{\ignorespaces \textit {Use Case} Remover Curso}}{13}{figure.3.25}%
+\contentsline {figure}{\numberline {3.26}{\ignorespaces \textit {Use Case} Editar Curso}}{13}{figure.3.26}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces \textit {Use Case} Adicionar preferência}}{14}{figure.3.27}%
+\contentsline {figure}{\numberline {3.28}{\ignorespaces \textit {Use Case} Remover preferência}}{14}{figure.3.28}%
+\contentsline {figure}{\numberline {3.29}{\ignorespaces \textit {Use Case} Visualizar preferências}}{14}{figure.3.29}%
+\contentsline {figure}{\numberline {3.30}{\ignorespaces \textit {Use Case} Alocar um aluno a um turno manualmente}}{15}{figure.3.30}%
+\contentsline {figure}{\numberline {3.31}{\ignorespaces \textit {Use Case} Alocar uma seleção de alunos automaticamente nos turnos}}{15}{figure.3.31}%
+\contentsline {figure}{\numberline {3.32}{\ignorespaces \textit {Use Case} Remover uma seleção de alunos de um turno manualmente}}{16}{figure.3.32}%
+\addvspace {10\p@ }
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
