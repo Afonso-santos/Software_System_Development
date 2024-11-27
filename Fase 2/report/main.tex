@@ -84,6 +84,30 @@
 %==========================================================================
 
 %==========================================================================
+% BEGIN ATUALIZAÇÔES REFERENTES À PRIMEIRA FASE
+%==========================================================================
+
+\chapter{Atualizações Referentes à Primeira Fase}
+\vspace{1cm}
+
+Relativamente à primeira fase do projeto, foram realizadas as seguintes atualizações:
+
+\begin{itemize}
+    \item \textbf{Modelo de Análise}: Adição dos relacionamentos entre Aluno e Horário, e
+        entre Diretor de Curso e Horário.
+    \item \textbf{Especificações de \textit{Use Cases}}: Renomeação do \textit{use case}
+        “Instalar aplicação” para “Primeira configuração”, com a sua generalização para
+        arquiteturas sem persistência de dados. Alteração dos termos “Aluno” e “Diretor de Curso”
+        para “Utilizador” e “Ator”, de forma a generalizar os casos de uso.
+    \item \textbf{Diagramas de \textit{Use Cases}}: Renomeação do \textit{use case}
+        “Instalar aplicação” para “Primeira configuração”.
+\end{itemize}
+
+%==========================================================================
+% END ATUALIZAÇÔES REFERENTES À PRIMEIRA FASE
+%==========================================================================
+
+%==========================================================================
 % BEGIN MODELO DE ANÁLISE
 %==========================================================================
 
@@ -152,264 +176,51 @@
 \chapter{Especificações de Casos de Uso}
 \vspace{1cm}
 
-% 01-Instalar aplicação.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/01-Instalar aplicação.png}
-    \captionof{figure}{\textit{Use Case} Instalar aplicação}
-    \label{fig:3-01-instalar_aplicacao}
-\end{minipage}
-
-% 02-Autenticação.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/02-Autenticação.png}
-    \captionof{figure}{\textit{Use Case} Autenticação}
-    \label{fig:3-02-autenticacao}
-\end{minipage}
-
-% 03-Desautenticação.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/03-Desautenticação.png}
-    \captionof{figure}{\textit{Use Case} Desautenticação}
-    \label{fig:3-03-desautenticacao}
-\end{minipage}
-
-% 04-Visualizar Horário.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/04-Visualizar Horário.png}
-    \captionof{figure}{\textit{Use Case} Visualizar Horário}
-    \label{fig:3-04-visualizar_horario}
-\end{minipage}
-
-% 05-Exportar Horário.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/05-Exportar Horário.png}
-    \captionof{figure}{\textit{Use Case} Exportar Horário}
-    \label{fig:3-05-exportar_horario}
-\end{minipage}
-
-% 06-Publicar horários de uma seleção de alunos.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/06-Publicar horários de uma seleção de alunos.png}
-    \captionof{figure}{\textit{Use Case} Publicar horários de uma seleção de alunos}
-    \label{fig:3-06-publicar_horarios_de_uma_selecao_de_alunos}
-\end{minipage}
-
-% 07-Importar alunos.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/07-Importar alunos.png}
-    \captionof{figure}{\textit{Use Case} Importar alunos}
-    \label{fig:3-07-importar_alunos}
-\end{minipage}
-
-% 08-Adicionar aluno.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/08-Adicionar aluno.png}
-    \captionof{figure}{\textit{Use Case} Adicionar aluno}
-    \label{fig:3-08-adicionar_aluno}
-\end{minipage}
-
-% 09-Remover uma seleção de alunos.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/09-Remover uma seleção de alunos.png}
-    \captionof{figure}{\textit{Use Case} Remover uma seleção de alunos}
-    \label{fig:3-09-remover_uma_selecao_de_alunos}
-\end{minipage}
-
-% 10-Editar aluno.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/10-Editar aluno.png}
-    \captionof{figure}{\textit{Use Case} Editar aluno}
-    \label{fig:3-10-editar_aluno}
-\end{minipage}
-
-% 11-Importar UCs.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/11-Importar UCs.png}
-    \captionof{figure}{\textit{Use Case} Importar UCs}
-    \label{fig:3-11-importar_ucs}
-\end{minipage}
-
-% 12-Adicionar UC.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/12-Adicionar UC.png}
-    \captionof{figure}{\textit{Use Case} Adicionar UC}
-    \label{fig:3-12-adicionar_uc}
-\end{minipage}
-
-% 13-Remover UC.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/13-Remover UC.png}
-    \captionof{figure}{\textit{Use Case} Remover UC}
-    \label{fig:3-13-remover_uc}
-\end{minipage}
-
-% 14-Editar UC.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/14-Editar UC.png}
-    \captionof{figure}{\textit{Use Case} Editar UC}
-    \label{fig:3-14-editar_uc}
-\end{minipage}
-
-% 15-Importar salas.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/15-Importar salas.png}
-    \captionof{figure}{\textit{Use Case} Importar salas}
-    \label{fig:3-15-importar_salas}
-\end{minipage}
-
-% 16-Adicionar sala.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/16-Adicionar sala.png}
-    \captionof{figure}{\textit{Use Case} Adicionar sala}
-    \label{fig:3-16-adicionar_sala}
-\end{minipage}
-
-% 17-Remover sala.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/17-Remover sala.png}
-    \captionof{figure}{\textit{Use Case} Remover sala}
-    \label{fig:3-17-remover_sala}
-\end{minipage}
-
-% 18-Editar sala.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/18-Editar sala.png}
-    \captionof{figure}{\textit{Use Case} Editar sala}
-    \label{fig:3-18-editar_sala}
-\end{minipage}
-
-% 19-Importar turnos.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/19-Importar turnos.png}
-    \captionof{figure}{\textit{Use Case} Importar turnos}
-    \label{fig:3-19-importar_turnos}
-\end{minipage}
-
-% 20-Adicionar turno.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/20-Adicionar turno.png}
-    \captionof{figure}{\textit{Use Case} Adicionar turno}
-    \label{fig:3-20-adicionar_turno}
-\end{minipage}
-
-% 21-Remover turno.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/21-Remover turno.png}
-    \captionof{figure}{\textit{Use Case} Remover turno}
-    \label{fig:3-21-remover_turno}
-\end{minipage}
-
-% 22-Editar turno.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/22-Editar turno.png}
-    \captionof{figure}{\textit{Use Case} Editar turno}
-    \label{fig:3-22-editar_turno}
-\end{minipage}
-
-% 23-Importar Cursos.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/23-Importar Cursos.png}
-    \captionof{figure}{\textit{Use Case} Importar Cursos}
-    \label{fig:3-23-importar_cursos}
-\end{minipage}
-
-% 24-Adicionar Curso.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/24-Adicionar Curso.png}
-    \captionof{figure}{\textit{Use Case} Adicionar Curso}
-    \label{fig:3-24-adicionar_curso}
-\end{minipage}
-
-% 25-Remover Curso.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/25-Remover Curso.png}
-    \captionof{figure}{\textit{Use Case} Remover Curso}
-    \label{fig:3-25-remover_curso}
-\end{minipage}
-
-% 26-Editar Curso.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/26-Editar Curso.png}
-    \captionof{figure}{\textit{Use Case} Editar Curso}
-    \label{fig:3-26-editar_curso}
-\end{minipage}
-
-% 27-Adicionar preferência.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/27-Adicionar preferência.png}
-    \captionof{figure}{\textit{Use Case} Adicionar preferência}
-    \label{fig:3-27-adicionar_preferencia}
-\end{minipage}
-
-% 28-Remover preferência.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/28-Remover preferência.png}
-    \captionof{figure}{\textit{Use Case} Remover preferência}
-    \label{fig:3-28-remover_preferencia}
-\end{minipage}
-
-% 29-Visualizar preferências.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/29-Visualizar preferências.png}
-    \captionof{figure}{\textit{Use Case} Visualizar preferências}
-    \label{fig:3-29-visualizar_preferencias}
-\end{minipage}
-
-% 30-Alocar um aluno a um turno manualmente.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/30-Alocar um aluno a um turno manualmente.png}
-    \captionof{figure}{\textit{Use Case} Alocar um aluno a um turno manualmente}
-    \label{fig:3-30-alocar_um_aluno_a_um_turno_manualmente}
-\end{minipage}
-
-% 31-Alocar uma seleção de alunos automaticamente nos turnos.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/31-Alocar uma seleção de alunos automaticamente nos turnos.png}
-    \captionof{figure}{\textit{Use Case} Alocar uma seleção de alunos automaticamente nos turnos}
-    \label{fig:3-31-alocar_uma_selecao_de_alunos_automaticamente_nos_turnos}
-\end{minipage}
-
-% 32-Remover uma seleção de alunos de um turno manualmente.png
-\begin{minipage}{\textwidth}
-    \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/descriptions/32-Remover uma seleção de alunos de um turno manualmente.png}
-    \captionof{figure}{\textit{Use Case} Remover uma seleção de alunos de um turno manualmente}
-    \label{fig:3-32-remover_uma_selecao_de_alunos_de_um_turno_manualmente}
-\end{minipage}
+\textcolor{red}{As especificações de casos de uso encontram-se em anexo TODO, com as respetivas,
+identificações das responsabilidades da lógica de negócio, definições da API e
+subsistemas envolvidos.}
 
 %==========================================================================
 % END ESPECIFICAÇÕES DE CASOS DE USO
+%==========================================================================
+
+%==========================================================================
+% BEGIN DIAGRAMA DE COMPONENTES
+%==========================================================================
+
+\chapter{Diagrama de Componentes}
+\vspace{1cm}
+
+\textcolor{red}{TODO}
+
+%==========================================================================
+% END DIAGRAMA DE COMPONENTES
+%==========================================================================
+
+%==========================================================================
+% BEGIN DIAGRAMA DE CLASSES
+%==========================================================================
+
+\chapter{Diagrama de Classes}
+\vspace{1cm}
+
+\textcolor{red}{TODO}
+
+%==========================================================================
+% END DIAGRAMA DE CLASSES
+%==========================================================================
+
+%==========================================================================
+% BEGIN DIAGRAMAS DE SEQUÊNCIA
+%==========================================================================
+
+\chapter{Diagramas de Sequência}
+\vspace{1cm}
+
+\textcolor{red}{TODO}
+
+%==========================================================================
+% END DIAGRAMAS DE SEQUÊNCIA
 %==========================================================================
 
 %==========================================================================
