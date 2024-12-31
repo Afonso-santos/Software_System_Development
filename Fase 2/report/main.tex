@@ -137,21 +137,21 @@ Relativamente à primeira fase do projeto, foram realizadas as seguintes atualiz
 
 \begin{minipage}{\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/diagrams/1-geral.png}
+    \includegraphics[width=1\textwidth]{images/use-cases-diagrams/1-geral.png}
     \captionof{figure}{Diagrama de Casos de Uso - Geral}
     \label{fig:2-1-diagrama_de_casos_de_uso_geral}
 \end{minipage}
 
 \begin{minipage}{\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/diagrams/2-gestao-alunos-cursos-ucs-turnos-salas.png}
+    \includegraphics[width=1\textwidth]{images/use-cases-diagrams/2-gestao-alunos-cursos-ucs-turnos-salas.png}
     \captionof{figure}{Diagrama de Casos de Uso - Gestão de Alunos, Cursos, UCs, Turnos e Salas}
     \label{fig:2-2-diagrama_de_casos_de_uso_gestao_de_alunos_cursos_ucs_turnos_e_salas}
 \end{minipage}
 
 \begin{minipage}{\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/diagrams/3-gestao-preferencias.png}
+    \includegraphics[width=1\textwidth]{images/use-cases-diagrams/3-gestao-preferencias.png}
     \captionof{figure}{Diagrama de Casos de Uso - Gestão de Preferências para UCs}
     \label{fig:2-3-diagrama_de_casos_de_uso_gestao_de_preferencias}
 \end{minipage}
@@ -160,7 +160,7 @@ Relativamente à primeira fase do projeto, foram realizadas as seguintes atualiz
 
 \begin{minipage}{\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{images/use-cases/diagrams/4-alocacao-alunos.png}
+    \includegraphics[width=1\textwidth]{images/use-cases-diagrams/4-alocacao-alunos.png}
     \captionof{figure}{Diagrama de Casos de Uso - Alocação de Alunos a Turnos}
     \label{fig:2-4-diagrama_de_casos_de_uso_alocacao_de_alunos}
 \end{minipage}
@@ -176,9 +176,11 @@ Relativamente à primeira fase do projeto, foram realizadas as seguintes atualiz
 \chapter{Especificações de Casos de Uso}
 \vspace{1cm}
 
-\textcolor{red}{As especificações de casos de uso encontram-se em anexo TODO, com as respetivas,
-identificações das responsabilidades da lógica de negócio, definições da API e
-subsistemas envolvidos.}
+\textcolor{red}{
+    As especificações de casos de uso encontram-se em anexo TODO, com as respetivas,
+    identificações das responsabilidades da lógica de negócio, definições da API e
+    subsistemas envolvidos.
+}
 
 %==========================================================================
 % END ESPECIFICAÇÕES DE CASOS DE USO
@@ -189,9 +191,23 @@ subsistemas envolvidos.}
 %==========================================================================
 
 \chapter{Diagrama de Componentes}
-\vspace{1cm}
+\vspace{0.5cm}
 
-\textcolor{red}{TODO}
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=.5\textwidth]{images/components-diagrams/1.png}
+    \captionof{figure}{Diagrama de Componentes}
+    \label{fig:4-1-diagrama_de_componentes}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=.95\textwidth]{images/components-diagrams/2.png}
+    \captionof{figure}{Diagrama de Componentes com DAOs}
+    \label{fig:4-2-diagrama_de_componentes_daos}
+\end{minipage}
 
 %==========================================================================
 % END DIAGRAMA DE COMPONENTES
@@ -202,9 +218,33 @@ subsistemas envolvidos.}
 %==========================================================================
 
 \chapter{Diagrama de Classes}
-\vspace{1cm}
 
-\textcolor{red}{TODO}
+\section{Arquitetura Geral}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/class-diagrams/1-arquitetura-geral.png}
+    \captionof{figure}{Arquitetura Geral}
+    \label{fig:5-1-arquitetura_geral}
+\end{minipage}
+
+\section{\textcolor{red}{Subsistema Autenticação (\textit{Authentication})}}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{images/class-diagrams/2-authentication.png}
+    \captionof{figure}{Subsistema Autenticação (\textit{Authentication})}
+    \label{fig:5-2-subsistema_autenticacao}
+\end{minipage}
+
+\section{\textcolor{red}{TODO update Subsistema Horários (\textit{Schedules})}}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1.5\textwidth, angle=270]{images/class-diagrams/3-schedules.png}
+    \captionof{figure}{Subsistema Horários (\textit{Schedules})}
+    \label{fig:5-3-subsistema_horarios}
+\end{minipage}
 
 %==========================================================================
 % END DIAGRAMA DE CLASSES
@@ -217,7 +257,12 @@ subsistemas envolvidos.}
 \chapter{Diagrama de Pacotes}
 \vspace{1cm}
 
-\textcolor{red}{TODO}
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{images/packages-diagram.png}
+    \captionof{figure}{Diagrama de Pacotes}
+    \label{fig:6-1-diagrama_de_pacotes}
+\end{minipage}
 
 %==========================================================================
 % END DIAGRAMA DE PACOTES
@@ -230,23 +275,44 @@ subsistemas envolvidos.}
 \chapter{Diagramas de Sequência}
 \vspace{1cm}
 
-\textcolor{red}{TODO}
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{images/sequence-diagrams/1-consultar-horario.png}
+    \captionof{figure}{Diagrama de Sequência - Consultar Horário}
+    \label{fig:7-1-diagrama_de_sequencia_consultar_horario}
+\end{minipage}
+
+\vspace{1cm}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{images/sequence-diagrams/2-gerar-horarios.png}
+    \captionof{figure}{Diagrama de Sequência - Gerar Horários}
+    \label{fig:7-2-diagrama_de_sequencia_gerar_horarios}
+\end{minipage}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1\textwidth]{images/sequence-diagrams/3-importar-alunos.png}
+    \captionof{figure}{Diagrama de Sequência - Importar Alunos}
+    \label{fig:7-3-diagrama_de_sequencia_importar_alunos}
+\end{minipage}
 
 %==========================================================================
 % END DIAGRAMAS DE SEQUÊNCIA
 %==========================================================================
 
 %==========================================================================
-% BEGIN DIAGRAMA DE INSTALAÇÃO
+% BEGIN BASE DE DADOS DO SISTEMA
 %==========================================================================
 
-\chapter{Diagrama de Instalação}
+\chapter{Base de Dados do Sistema}
 \vspace{1cm}
 
 \textcolor{red}{TODO}
 
 %==========================================================================
-% END DIAGRAMA DE INSTALAÇÃO
+% END BASE DE DADOS DO SISTEMA
 %==========================================================================
 
 %==========================================================================
