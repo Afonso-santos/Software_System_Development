@@ -1,7 +1,13 @@
 # Ignore all latex build and aux files
 Fase 1/report/output/*
 Fase 2/report/output/*
+Fase 3/report/output/*
 
 # Except the pdf
 !Fase 1/report/output/*.pdf
 !Fase 2/report/output/*.pdf
+!Fase 3/report/output/*.pdf
+
+# Ignore the obj and bin directories
+Fase 3/SchedulePlanner/obj/
+Fase 3/SchedulePlanner/bin/
