@@ -189,4 +189,69 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
         return _students[num];
     }
+
+    public void RemoveStudent(string studentNum)
+    {
+        if (!_students.ContainsKey(studentNum))
+        {
+            throw new ArgumentException("Student not found.");
+        }
+        _students.Remove(studentNum);
+    }
+
+    public void RemoveShift(string shiftNum)
+    {
+        if (!_shifts.ContainsKey(shiftNum))
+        {
+            throw new ArgumentException("Shift not found.");
+        }
+        _shifts.Remove(shiftNum);
+    }
+
+    public void AddShift(Shift shift)
+    {
+        if (_shifts.ContainsKey(shift.Number))
+        {
+            throw new ArgumentException("Shift already exists.");
+        }
+        _shifts[shift.Number] = shift;
+    }
+
+    public void UpdateStudent(Student student)
+    {
+        if (!_students.ContainsKey(student.Number))
+        {
+            throw new ArgumentException("Student not found.");
+        }
+        _students[student.Number] = student;
+    }
+
+    public void UpdateShift(Shift shift)
+    {
+        if (!_shifts.ContainsKey(shift.Number))
+        {
+            throw new ArgumentException("Shift not found.");
+        }
+        _shifts[shift.Number] = shift;
+    }
+
+    public void UpdateClassroom(Classroom classroom)
+    {
+        if (!_classrooms.ContainsKey(classroom.Number))
+        {
+            throw new ArgumentException("Classroom not found.");
+        }
+        _classrooms[classroom.Number] = classroom;
+    }
+
+    public IEnumerable<string> GetShiftsInClassroom(string classroomNumber)
+    {
+        if (!_classrooms.ContainsKey(classroomNumber))
+        {
+            throw new ArgumentException("Classroom not found.");
+        }
+
+        return _shifts.Values.Where(s => s.Classroom.Number == classroomNumber).Select(s => s.ToString());
+    }
+
 }
