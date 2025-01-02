@@ -22,8 +22,6 @@ public interface ISchedulePlanner
     void ChangeShiftClassroom(string shiftId, string classroomId);
     IEnumerable<string> GetStudentsInShift(string shiftId);
     Student FindStudent(string studentId);
-
-    /* TODO Implement these methods in the facade
     void RemoveStudent(string studentId);
     void RemoveShift(string shiftId);
     void AddShift(Shift shift);
@@ -31,6 +29,6 @@ public interface ISchedulePlanner
     void UpdateShift(Shift shift);
     void UpdateClassroom(Classroom classroom);
     IEnumerable<string> GetShiftsInClassroom(string classroomId);
-    */
+    
 }
 
