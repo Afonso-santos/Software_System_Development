@@ -288,10 +288,29 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     continue;
                 }
                 // Parse the shift type and number
-                // scrape the last char from the shift string
-                var shiftNumber = shiftData.Shift[^1];
-                // the remaining string is the shift type
-                var shiftType = shiftData.Shift.Substring(0, shiftData.Shift.Length - 1);
+                var shiftNumber = '0';
+                var shiftType = "";
+                try {
+                    // scrape the digits from the end of the string
+                    int i;
+                    for (i = shiftData.Shift.Length - 1; i >= 0; i--)
+                    {
+                        if (char.IsDigit(shiftData.Shift[i]))
+                        {
+                            shiftNumber = shiftData.Shift[i];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    // the remaining string is the shift type
+                    shiftType = shiftData.Shift.Substring(0, i + 1);
+                } catch (Exception ex) {
+                    Console.WriteLine($"Error parsing shift type and number: {ex.Message}");
+                    continue;
+                }
 
                 var day = GetDayOfWeek(shiftData.Day);
                 if (string.IsNullOrEmpty(shiftData.Start) || string.IsNullOrEmpty(shiftData.End))
@@ -363,7 +382,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     "T" => ShiftType.T,
                     "TP" => ShiftType.TP,
                     "PL" => ShiftType.PL,
-                    _ => throw new ArgumentOutOfRangeException(nameof(shiftType), "Invalid shift type")
+                    _ => ShiftType.T
                 };
 
                 // instanciate the shift
@@ -445,9 +464,14 @@ public class SchedulePlannerFacade : ISchedulePlanner
     {
         _courses.DeleteCourse(courseCode);
     }
+
     public IEnumerable<string> GetCourses()
     {
         return _courses.GetAllCourses().Select(course => course.ToString());
     }
 
+    public bool CourseExists(string courseCode)
+    {
+        return _courses.CourseExists(courseCode);
+    }
 }

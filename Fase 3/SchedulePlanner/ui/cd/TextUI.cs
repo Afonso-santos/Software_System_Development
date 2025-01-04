@@ -492,7 +492,7 @@ public class TextUI
             }
 
             // Create the course if it does not exist
-            if (!this.model.GetCourses().Contains(courseName))
+            if (!this.model.CourseExists(courseName))
             {
                 this.model.AddCourse(new Course(courseName));
             }

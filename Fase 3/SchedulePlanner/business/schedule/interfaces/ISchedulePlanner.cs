@@ -33,10 +33,9 @@ public interface ISchedulePlanner
     IEnumerable<string> GetUCs();
 
     void AddCourse(Course course);
-
     void RemoveCourse(string code);
-
     IEnumerable<string> GetCourses();
+    bool CourseExists(string code);
 
     void RemoveStudent(string studentId);
     void RemoveShift(string uc, ShiftType type, int number);
