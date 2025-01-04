@@ -77,14 +77,14 @@ public class TextUI
                 return;
             }
 
-            bool imported = this.model.ImportStudentsAndUCs(fileName);
+            bool imported = this.model.ImportStudent(fileName);
             if (imported)
             {
                 Console.WriteLine("Students imported successfully.");
             }
             else
             {
-                Console.WriteLine("No students imported. Please check the file and try again.");
+                Console.WriteLine("No student imported. Please check the file and try again.");
             }
             
 

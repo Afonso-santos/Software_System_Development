@@ -5,6 +5,7 @@ using SchedulePlanner.business.schedule.interfaces;
 using SchedulePlanner.business.schedule.models;
 using static SchedulePlanner.business.schedule.models.Shift;
 
+
 public class TextUI
 {
     private readonly ISchedulePlanner model;
@@ -31,7 +32,8 @@ public class TextUI
             "Classroom Operations",
             "Add Student to Shift",
             "Remove Student from Shift",
-            "List Students in Shift"
+            "List Students in Shift",
+            "Import Students",
         });
 
         // menu.SetPreCondition(3, () => this.model.HasClassrooms());
@@ -46,6 +48,7 @@ public class TextUI
         menu.SetHandler(6, () => AddStudentToShift());
         menu.SetHandler(7, () => RemoveStudentFromShift());
         menu.SetHandler(8, () => ListStudentsInShift());
+        menu.SetHandler(9, () => importStudentFromFile());
 
         menu.Run(isMainMenu: true);
     }
@@ -224,7 +227,7 @@ public class TextUI
 
                 Console.WriteLine("New shift start hour: ");
                 string? startHourInput = Console.ReadLine();
-                if (startHourInput == null || !TimeSpan.TryParse(startHourInput , out TimeSpan startHour))
+                if (startHourInput == null || !TimeSpan.TryParse(startHourInput, out TimeSpan startHour))
                 {
                     Console.WriteLine("Shift start hour must be a valid time.");
                     return;
@@ -266,7 +269,7 @@ public class TextUI
         {
             Console.WriteLine(e.Message);
         }
-    } 
+    }
 
     private void ListShifts()
     {
@@ -473,6 +476,27 @@ public class TextUI
         }
     }
 
+    private void importStudentFromFile()
+    {
+            Console.WriteLine("Path from Student File: ");
+            string? shiftNumber = Console.ReadLine();
+            if (shiftNumber == null)
+            {
+                Console.WriteLine("Path from student file cannot be empty.");
+                return;
+            }
+
+            bool imported = this.model.ImportStudent(shiftNumber);
+            if (imported)
+            {
+                Console.WriteLine("Students imported successfully.");
+            }
+            else
+            {
+                Console.WriteLine("No student imported. Please check the file and try again.");
+            }
+    }
+
     private void ManageUCS()
     {
         var menu = new Menu("UCS Management", new[]
@@ -536,7 +560,7 @@ public class TextUI
 
                 this.model.AddUCS(new UC(ucsCode, ucsName, ucsCourseCode, ucsYear, ucsSemester, ucsPreference));
                 Console.WriteLine("UCS added successfully.");
-                
+
             }
             else
             {
@@ -555,7 +579,7 @@ public class TextUI
         {
             Console.WriteLine("UCS code to remove: ");
             string? ucsCode = Console.ReadLine();
-            if (ucsCode != null )
+            if (ucsCode != null)
             {
                 this.model.RemoveUCS(ucsCode);
                 Console.WriteLine("UCS removed successfully.");
@@ -629,7 +653,7 @@ public class TextUI
         {
             Console.WriteLine("Course name to remove: ");
             string? courseName = Console.ReadLine();
-            if (courseName != null )
+            if (courseName != null)
             {
                 this.model.RemoveCourse(courseName);
                 Console.WriteLine("Course removed successfully.");
