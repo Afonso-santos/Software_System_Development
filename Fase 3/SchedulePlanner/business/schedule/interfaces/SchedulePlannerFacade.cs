@@ -340,6 +340,12 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     continue;
                 }
 
+                if (string.IsNullOrEmpty(UCName))
+                {
+                    Console.WriteLine("Invalid shift data: UC name is null or empty.");
+                    continue;
+                }
+
                 if (shiftData.Theoretical)
                 {
                     capacity = 100;
@@ -351,15 +357,13 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
                 // Prepend the building to the room string
                 room = building + room;
-                // TODO instanciate the classroom
-                /*
+                // instanciate the classroom
                 var classroom = new Classroom(room, capacity.ToString());
                 if (!_classrooms.ClassroomExists(room))
                 {
                     // Add the Classroom to the database if it doesn't exist
-                    _classrooms.AddClassroom(classroom);
+                    _classrooms.InsertClassroom(classroom);
                 }
-                */
 
                 // Check if the UC exists if not create it
                 if (!_ucs.UCExists(UCCode))
@@ -368,19 +372,25 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     _ucs.InsertUC(uc);
                 }
 
-                // TODO instanciate the shift
-                /*
-                var shift = new Shift(shiftNumber, shiftType, UCCode, day, startHour, capacity, classroom);
-                var existingShift = _shifts.GetShiftByNumber(shiftNumber);
-                if (existingShift is null)
+                // convert the shift type to enum
+                var shiftTypeEnum = shiftType switch
                 {
-                    _shifts.AddShift(shift);
+                    "T" => ShiftType.T,
+                    "TP" => ShiftType.TP,
+                    "PL" => ShiftType.PL,
+                    _ => throw new ArgumentOutOfRangeException(nameof(shiftType), "Invalid shift type")
+                };
+
+                // instanciate the shift
+                var shift = new Shift(shiftNumber, shiftTypeEnum, day, startHour, endHour, capacity, UCCode, room);
+                if (!_shifts.ShiftExists(UCCode, shift.Type, shift.Number))
+                {
+                    _shifts.InsertShift(shift);
                 }
                 else
                 {
                     _shifts.UpdateShift(shift);
                 }
-                */
 
                 // System.Console.WriteLine($"Id: {shiftData.Id}");
                 // System.Console.WriteLine($"Shift - number: {shiftNumber} type: {shiftType} day: {day} start: {startHour} end: {endHour}");
