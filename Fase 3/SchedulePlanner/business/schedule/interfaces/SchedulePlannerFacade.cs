@@ -3,7 +3,6 @@ namespace SchedulePlanner.business.schedule.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Org.BouncyCastle.Security;
 using SchedulePlanner.business.schedule.models;
 using SchedulePlanner.Data;
 using Newtonsoft.Json;
@@ -300,8 +299,13 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     continue;
                 }
 
-
                 var filterId = shiftData.FilterId.ToString();
+                if (filterId.Length < 3)
+                {
+                    Console.WriteLine("Invalid shift data: FilterId is invalid.");
+                    continue;
+                }
+
                 var year = int.Parse(filterId.Substring(0, 1));
                 var semester = int.Parse(filterId.Substring(1, 1));
                 var uniqueId = int.Parse(filterId.Substring(2));
@@ -311,8 +315,12 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     Console.WriteLine("Invalid shift data: Shift is null or empty.");
                     continue;
                 }
-                var shiftType = Enum.Parse<Shift.ShiftType>(shiftData.Shift.Substring(0, 2));
-                var shiftNumber = uniqueId;
+                // Parse the shift type and number
+                // scrape the last char from the shift string
+                var shiftNumber = shiftData.Shift[^1];
+                // the remaining string is the shift type
+                var shiftType = shiftData.Shift.Substring(0, shiftData.Shift.Length - 1);
+
                 var day = GetDayOfWeek(shiftData.Day);
                 if (string.IsNullOrEmpty(shiftData.Start) || string.IsNullOrEmpty(shiftData.End))
                 {
@@ -321,7 +329,8 @@ public class SchedulePlannerFacade : ISchedulePlanner
                 }
                 var startHour = TimeSpan.Parse(shiftData.Start);
                 var endHour = TimeSpan.Parse(shiftData.End);
-                var courseCode = shiftData.Id;
+                var UCCode = shiftData.Id;
+                var UCName = shiftData.Title;
                 var building = shiftData.Building;
                 var room = shiftData.Room;
                 var capacity = 0;
@@ -338,6 +347,12 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     continue;
                 }
 
+                if (string.IsNullOrEmpty(UCCode))
+                {
+                    Console.WriteLine("Invalid shift data: UC code is null or empty.");
+                    continue;
+                }
+
                 if (shiftData.Theoretical)
                 {
                     capacity = 100;
@@ -347,14 +362,28 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     capacity = 50;
                 }
 
-                if (string.IsNullOrEmpty(courseCode))
+                // Prepend the building to the room string
+                room = building + room;
+                // TODO instanciate the classroom
+                /*
+                var classroom = new Classroom(room, capacity.ToString());
+                if (!_classrooms.ClassroomExists(room))
                 {
-                    Console.WriteLine("Invalid shift data: Course code is null or empty.");
-                    continue;
+                    // Add the Classroom to the database if it doesn't exist
+                    _classrooms.AddClassroom(classroom);
                 }
-                var classroom = new Classroom(room, building, capacity.ToString());
-                var shift = new Shift(shiftNumber, shiftType, day, startHour, capacity, courseCode, classroom);
+                */
 
+                // Check if the UC exists if not create it
+                if (!_ucs.UCExists(UCCode))
+                {
+                    var uc = new UC(UCCode, UCName, "Test", year, semester);
+                    _ucs.InsertUC(uc);
+                }
+
+                // TODO instanciate the shift
+                /*
+                var shift = new Shift(shiftNumber, shiftType, UCCode, day, startHour, capacity, classroom);
                 var existingShift = _shifts.GetShiftByNumber(shiftNumber);
                 if (existingShift is null)
                 {
@@ -364,6 +393,11 @@ public class SchedulePlannerFacade : ISchedulePlanner
                 {
                     _shifts.UpdateShift(shift);
                 }
+                */
+
+                // System.Console.WriteLine($"Id: {shiftData.Id}");
+                // System.Console.WriteLine($"Shift - number: {shiftNumber} type: {shiftType} day: {day} start: {startHour} end: {endHour}");
+                // System.Console.WriteLine($"Classroom - room: {room} capacity: {capacity}");
             }
 
             return true;

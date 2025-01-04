@@ -28,7 +28,8 @@ public class TextUI
             "Classroom Operations",
             "Add Student to Shift",
             "Remove Student from Shift",
-            "List Students in Shift"
+            "List Students in Shift",
+            "Import Schedules"
         });
 
         // menu.SetPreCondition(3, () => this.model.HasClassrooms());
@@ -41,6 +42,7 @@ public class TextUI
         menu.SetHandler(4, () => AddStudentToShift());
         menu.SetHandler(5, () => RemoveStudentFromShift());
         menu.SetHandler(6, () => ListStudentsInShift());
+        menu.SetHandler(7, () => ImportSchedules());
 
         menu.Run(isMainMenu: true);
     }
@@ -249,14 +251,6 @@ public class TextUI
             string? classroomNumber = Console.ReadLine();
             if (classroomNumber != null && !this.model.HasClassroom(classroomNumber))
             {
-                Console.WriteLine("Building: ");
-                string? building = Console.ReadLine();
-                if (building == null)
-                {
-                    Console.WriteLine("Building cannot be empty.");
-                    return;
-                }
-
                 Console.WriteLine("Capacity: ");
                 string? capacity = Console.ReadLine();
                 if (capacity == null)
@@ -264,7 +258,7 @@ public class TextUI
                     Console.WriteLine("Capacity cannot be empty.");
                     return;
                 }
-                this.model.AddClassroom(new Classroom(classroomNumber, building, capacity));
+                this.model.AddClassroom(new Classroom(classroomNumber, capacity));
                 Console.WriteLine("Classroom added successfully.");
             }
             else
@@ -388,6 +382,29 @@ public class TextUI
         catch (Exception e)
         {
             Console.WriteLine("Error listing students in shift: " + e.Message);
+        }
+    }
+
+    private void ImportSchedules()
+    {
+        try
+        {
+            Console.Write("File path: ");
+            string? filePath = Console.ReadLine();
+            if (filePath == null)
+            {
+                Console.WriteLine("File path cannot be empty.");
+                return;
+            }
+
+            if (this.model.ImportShifts(filePath))
+            {
+                Console.WriteLine("Schedules imported successfully.");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error importing schedules: " + e.Message);
         }
     }
 }
