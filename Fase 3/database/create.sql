@@ -27,17 +27,18 @@ CREATE TABLE IF NOT EXISTS UC (
 );
 
 CREATE TABLE IF NOT EXISTS Classroom (
-    Num VARCHAR(50) NOT NULL,
+    Number VARCHAR(50) NOT NULL,
     Capacity INT NOT NULL,
-    PRIMARY KEY (Num)
+    PRIMARY KEY (Number)
 );
 
 CREATE TABLE IF NOT EXISTS Shift (
     Num INT NOT NULL,
-    Type ENUM('T', 'TP', 'P') NOT NULL,
+    Type ENUM('T', 'TP', 'PL') NOT NULL,
     UC VARCHAR(50) NOT NULL,
     Day ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
-    Hour TIME NOT NULL,
+    StartingHour TIME NOT NULL,
+    EndingHour TIME NOT NULL,
     `Limit` INT,
     Classroom VARCHAR(50) NOT NULL,
 
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Shift (
     UNIQUE KEY (Num, Type, UC),
 
     FOREIGN KEY (UC) REFERENCES UC(Code),
-    FOREIGN KEY (Classroom) REFERENCES Classroom(Num)
+    FOREIGN KEY (Classroom) REFERENCES Classroom(Number)
 );
 
 CREATE TABLE IF NOT EXISTS Student (

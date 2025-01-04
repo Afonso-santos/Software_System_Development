@@ -3,6 +3,7 @@ namespace SchedulePlanner.ui.cd;
 using SchedulePlanner.ui;
 using SchedulePlanner.business.schedule.interfaces;
 using SchedulePlanner.business.schedule.models;
+using static SchedulePlanner.business.schedule.models.Shift;
 
 public class TextUI
 {
@@ -173,13 +174,13 @@ public class TextUI
         var menu = new Menu("Shift Management", new[]
         {
             "Add Shift",
-            "Change Shift Classroom",
-            "List Shifts"
+            "List Shifts",
+            "Remove Shift"
         });
 
         menu.SetHandler(1, () => AddShift());
-        menu.SetHandler(2, () => ChangeShiftClassroom());
-        menu.SetHandler(3, () => ListShifts());
+        menu.SetHandler(2, () => ListShifts());
+        menu.SetHandler(3, () => RemoveShift());
 
         menu.Run();
     }
@@ -187,44 +188,128 @@ public class TextUI
     private void AddShift()
     {
         Console.WriteLine("Adding a new shift...");
-        // TODO Specific implementation
-    }
 
-    private void ChangeShiftClassroom()
-    {
         try
         {
-            Console.WriteLine("Shift number to update: ");
-            string? shiftNumber = Console.ReadLine();
-            if (shiftNumber != null && this.model.ShiftExists(shiftNumber))
+            Console.WriteLine("New shift UC: ");
+            string? uc = Console.ReadLine();
+
+            Console.WriteLine("New shift type (0: T; 1: TP; 2: PL): ");
+            string? typeInput = Console.ReadLine()?.ToUpper();
+            if (typeInput == null || !Enum.TryParse<ShiftType>(typeInput, out ShiftType type))
             {
-                Console.WriteLine("New classroom number: ");
+                Console.WriteLine("Shift type must be a valid type.");
+                return;
+            }
+
+            Console.WriteLine("New shift number: ");
+            string? numInput = Console.ReadLine();
+            if (numInput == null || !int.TryParse(numInput, out int num))
+            {
+                Console.WriteLine("Shift number must be a valid integer.");
+                return;
+            }
+
+            if (uc != null && !model.ShiftExists(uc, type, num))
+            {
+                Console.WriteLine("New shift week day: (monday, tuesday, wednesday, thursday, friday)");
+                string? day = Console.ReadLine()?.ToLower();
+                if (day == null || day != "monday" && day != "tuesday" && day != "wednesday" && day != "thursday" && day != "friday")
+                {
+                    Console.WriteLine("Shift week day cannot be empty.");
+                    return;
+                }
+
+                Console.WriteLine("New shift start hour: ");
+                string? startHourInput = Console.ReadLine();
+                if (startHourInput == null || !TimeSpan.TryParse(startHourInput , out TimeSpan startHour))
+                {
+                    Console.WriteLine("Shift start hour must be a valid time.");
+                    return;
+                }
+
+                Console.WriteLine("New shift ending hour: ");
+                string? endHourInput = Console.ReadLine();
+                if (endHourInput == null || !TimeSpan.TryParse(endHourInput, out TimeSpan endHour))
+                {
+                    Console.WriteLine("Shift ending hour must be a valid time.");
+                    return;
+                }
+
+                Console.WriteLine("New shift capacity: ");
+                string? capacityInput = Console.ReadLine();
+                if (capacityInput == null || !int.TryParse(capacityInput, out int capacity))
+                {
+                    Console.WriteLine("Shift capacity must be a valid integer.");
+                    return;
+                }
+
+                Console.WriteLine("New shift classroom number: ");
                 string? classroomNumber = Console.ReadLine();
-                if (classroomNumber != null && this.model.HasClassroom(classroomNumber))
+                if (classroomNumber == null || !model.HasClassroom(classroomNumber))
                 {
-                    this.model.ChangeShiftClassroom(shiftNumber, classroomNumber);
-                    Console.WriteLine("Shift classroom updated successfully.");
+                    Console.WriteLine("Shift classroom number must be a valid classroom.");
+                    return;
                 }
-                else
-                {
-                    Console.WriteLine("The specified classroom does not exist.");
-                }
+
+                model.AddShift(new Shift(num, type, day, startHour, endHour, capacity, uc, classroomNumber));
+                Console.WriteLine("Shift added");
             }
             else
             {
-                Console.WriteLine("The specified shift does not exist.");
+                Console.WriteLine("This shift already exists!");
             }
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error updating shift classroom: " + e.Message);
+            Console.WriteLine(e.Message);
         }
-    }
+    } 
 
     private void ListShifts()
     {
-        Console.WriteLine("Listing shifts...");
-        // Specific implementation
+        Console.WriteLine(string.Join("\n", this.model.GetShifts()));
+    }
+
+    private void RemoveShift()
+    {
+        try
+        {
+            Console.WriteLine("Shift UC: ");
+            string? uc = Console.ReadLine();
+
+            Console.WriteLine("Shift type (0: T; 1: TP; 2: PL): ");
+            string? typeInput = Console.ReadLine()?.ToUpper();
+            if (typeInput == null || !Enum.TryParse<ShiftType>(typeInput, out ShiftType type))
+            {
+                Console.WriteLine("Shift type must be a valid type.");
+                return;
+            }
+
+            Console.WriteLine("Shift number: ");
+            string? numInput = Console.ReadLine();
+            if (numInput == null || !int.TryParse(numInput, out int num))
+            {
+                Console.WriteLine("Shift number must be a valid integer.");
+                return;
+            }
+
+            if (uc != null && this.model.ShiftExists(uc, type, num))
+            {
+                this.model.RemoveShift(uc, type, num);
+                Console.WriteLine("Shift removed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("This shift does not exist!");
+            }
+
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error removing shift: " + e.Message);
+        }
     }
 
     private void ManageClassrooms()
@@ -258,6 +343,7 @@ public class TextUI
                     Console.WriteLine("Capacity cannot be empty.");
                     return;
                 }
+
                 this.model.AddClassroom(new Classroom(classroomNumber, capacity));
                 Console.WriteLine("Classroom added successfully.");
             }
