@@ -198,7 +198,7 @@ no sistema.
 
 
 As especificações de casos de uso encontram-se no seguinte \textit{link}:
-\href{https://docs.google.com/spreadsheets/d/1CX2vHfmeK1eUM9bUtrgUxrdumPSVTR17wG6DoLOfju8/edit?usp=sharing}{Especificações dos Casos de Uso}
+\textcolor{blue}{\href{https://docs.google.com/spreadsheets/d/1CX2vHfmeK1eUM9bUtrgUxrdumPSVTR17wG6DoLOfju8/edit?usp=sharing}{Especificações dos Casos de Uso}}
 , com as respetivas identificações das responsabilidades da lógica de negócio, definições da API e
 subsistemas envolvidos.
 
@@ -391,6 +391,34 @@ adicional que não interfere com a lógica de negócio.
 %==========================================================================
 
 \chapter{Manual de Utilização}
+
+Primeiramente, é necessário a criação e povoamento da base de dados, através dos ficheiros \texttt{SchedulePlanner\_database\_create.sql}
+e \texttt{SchedulePlanner\_database\_populate.sql}, respetivamente.
+
+Para executar o programa, é necessário ter instalado o \texttt{.NET}.
+Seguidamente, é necessário utilizar o comando \texttt{dotnet run} na diretoria \texttt{SchedulePlanner/}.
+O utilizador terá de introduzir as suas credenciais de acesso, e poderá então aceder ao menu principal - caso seja o Diretor de Curso,
+o seu menu será voltado para a gestão de turnos e alocação de alunos, enquanto que o menu do aluno será voltado para a consulta e exportação
+de horários.
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=0.3\textwidth]{images/menu-dc.png}
+    \captionof{figure}{Menu Principal do Diretor de Curso}
+    \label{fig:10-1-menu_principal-dc}
+\end{minipage}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=0.3\textwidth]{images/menu-aluno.png}
+    \captionof{figure}{Menu Principal do Aluno}
+    \label{fig:10-2-menu_principal-aluno}
+\end{minipage}
+
+Para a alocação de alunos a turnos, é necessário que o Diretor de Curso tenha previamente importado os alunos,
+através do ficheiro \texttt{alunos.csv}, e os turnos, através do ficheiro \texttt{shifts.json}.
+
+
 
 %==========================================================================
 % END MANUAL DE UTILIZAÇÃO
