@@ -1,10 +1,10 @@
-﻿using SchedulePlanner.business.authentication.services;
+﻿using SchedulePlanner.business.authentication.interfaces;
 
 class Program
 {
     public static void Main()
     {
-        var loginService = new LoginService();
+        var authenticationFacade = new AuthenticationFacade();
 
         Console.WriteLine("Welcome to Schedule Planner!");
 
@@ -20,13 +20,13 @@ class Program
             return;
         }
 
-        if (!loginService.Login(username, password))
+        if (!authenticationFacade.Login(username, password))
         {
             Console.WriteLine("Invalid credentials. Please try again.");
             return;
         }
 
-        if (loginService.IsAdmin(username))
+        if (authenticationFacade.IsAdmin(username))
         {
             var textUI = new SchedulePlanner.ui.cd.TextUI();
             textUI.RunMenu();

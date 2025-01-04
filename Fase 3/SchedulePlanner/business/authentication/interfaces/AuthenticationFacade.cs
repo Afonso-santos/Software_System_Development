@@ -1,12 +1,12 @@
-namespace SchedulePlanner.business.authentication.services;
+namespace SchedulePlanner.business.authentication.interfaces;
 
 using SchedulePlanner.Data;
 
-public class LoginService : interfaces.ILoginFacade
+public class AuthenticationFacade : ISSAuthentication
 {
     private UserDAO _userDAO;
 
-    public LoginService() {
+    public AuthenticationFacade() {
         _userDAO = UserDAO.GetInstance();
     }
 
