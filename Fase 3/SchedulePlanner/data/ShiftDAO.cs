@@ -131,8 +131,8 @@ namespace SchedulePlanner.Data
             connection.Open();
             var query = @"UPDATE Shift 
                               SET Type = @Type, Day = @Day, StartingHour = @StartingHour, EndingHour = @EndingHour, `Limit` = @Limit, UC = @Course, Classroom = @Classroom
-                              WHERE Num = @Num";
-
+                              WHERE Num = @Num AND Type = @Type AND UC = @Course";
+    
             using var command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Num", shift.Number);
             command.Parameters.AddWithValue("@Type", shift.Type.ToString());
