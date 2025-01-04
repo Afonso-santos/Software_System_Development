@@ -13,5 +13,5 @@
 ## Fase 3
 
 - [Código Fonte](./Fase%203/SchedulePlanner/)
-- [Relatório](./Fase%203/report.pdf)
+- [Relatório](./Fase%203/report/report.pdf)
 - [VPP]
