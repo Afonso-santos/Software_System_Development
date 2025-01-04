@@ -33,7 +33,8 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public bool HasStudents() => false;
 
-    public bool HasClassroom(string classroomNumber) {
+    public bool HasClassroom(string classroomNumber)
+    {
         return _classrooms.ContainsKey(classroomNumber);
     }
 
@@ -56,12 +57,12 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public void AddStudentToShift(string studentNum, string shiftNum)
     {
-        
+
     }
 
     public void RemoveStudentFromShift(string studentNum, string shiftNum)
     {
-       
+
     }
 
     public void AddClassroom(Classroom classroom)
@@ -70,12 +71,12 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public void RemoveClassroom(string classroomNumber)
     {
-      
+
     }
 
     public void ChangeShiftClassroom(string shiftNum, string classroomNum)
     {
-        
+
     }
 
     public IEnumerable<string> GetStudentsInShift(string shiftNum)
@@ -85,28 +86,28 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public void AddShift(Shift shift)
     {
-       
+
     }
 
     public void RemoveShift(string shiftNumber)
-     {
-   
+    {
+
     }
 
     public void SetShiftClassroom(string shiftNum, string classroomNum)
     {
-        
+
     }
 
     public void SetShiftCapacity(string shiftNum, string capacity)
     {
-    
+
 
     }
 
     public void SetShiftType(string shiftNum, string type)
     {
-        
+
     }
 
     public Student? FindStudent(string num)
@@ -115,101 +116,102 @@ public class SchedulePlannerFacade : ISchedulePlanner
     }
 
 
-   /// <summary>
-/// Imports students, courses, and curricular units (UCs) from a CSV file.
-/// </summary>
-/// <param name="fileName">The path to the CSV file.</param>
-/// <returns>True if the operation succeeds, false otherwise.</returns>
-public bool ImportStudentsAndUCs(string fileName)
-{
-    try
+    /// <summary>
+    /// Imports students, courses, and curricular units (UCs) from a CSV file.
+    /// </summary>
+    /// <param name="fileName">The path to the CSV file.</param>
+    /// <returns>True if the operation succeeds, false otherwise.</returns>
+    public bool ImportStudentsAndUCs(string fileName)
     {
-        using (var reader = new StreamReader(fileName))
+        try
         {
-            var line = reader.ReadLine(); 
-            if (line == null)
+            using (var reader = new StreamReader(fileName))
             {
-                throw new InvalidOperationException("The file is empty.");
+                var line = reader.ReadLine();
+                if (line == null)
+                {
+                    throw new InvalidOperationException("The file is empty.");
+                }
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    var fields = line.Split(';');
+
+
+                    if (fields.Length < 16)
+                    {
+                        Console.WriteLine($"Invalid line: {line}");
+                        continue;
+                    }
+
+                    // Retrieves course information.
+                    var courseCode = fields[3];
+                    var courseName = fields[4];
+
+                    // Ensures the course exists in the database; adds it if not.
+                    var course = _courses.GetCourseByCode(courseCode);
+                    if (course is null)
+                    {
+                        course = new Course(courseCode, courseName);
+                        _courses.AddCourse(course);
+                    }
+
+                    // Retrieves UC (Curricular Unit) information.
+                    var ucCode = fields[7];
+                    var ucName = fields[8];
+                    var yearOfUC = Convert.ToInt32(fields[6]);
+
+                    // Ensures the UC exists in the database; adds it if not.
+                    var uc = _ucs.GetUCByCode(ucCode);
+                    if (uc is null)
+                    {
+                        uc = new UC(ucCode, ucName, courseCode, null);
+                        _ucs.AddUC(uc);
+                    }
+
+
+                    var studentNumber = fields[11];
+                    var studentName = fields[12];
+                    var studentEmail = fields[13];
+                    var specialRegime = fields[15];
+
+                    // Determines if the student has a special regime.
+                    var statute = !string.IsNullOrWhiteSpace(specialRegime);
+
+                    // Creates a new student object.
+                    var student = new Student(
+                        studentNumber,
+                        studentName,
+                        studentEmail,
+                        statute,
+                        year: yearOfUC, // Sets the student's year based on the UC.
+                        course: courseCode,
+                        partialMean: 0.0f, // Default value.
+                        username: studentEmail.Split('@')[0] // Derives username from email.
+                    );
+
+                    // Inserts or updates the student in the database.
+                    var existingStudent = _students.GetStudentByNumber(studentNumber);
+                    if (existingStudent == null)
+                    {
+                        _students.InsertStudent(student);
+                    }
+                    else
+                    {
+                        _students.UpdateStudent(student);
+                    }
+                }
             }
 
-            while ((line = reader.ReadLine()) != null) 
-            {
-                var fields = line.Split(';');
-
-                
-                if (fields.Length < 16)
-                {
-                    Console.WriteLine($"Invalid line: {line}");
-                    continue;
-                }
-
-                // Retrieves course information.
-                var courseCode = fields[3];
-                var courseName = fields[4];
-
-                // Ensures the course exists in the database; adds it if not.
-                var course = _courses.GetCourseByCode(courseCode);
-                if (course is null)
-                {
-                    course = new Course(courseCode, courseName);
-                    _courses.AddCourse(course);
-                }
-
-                // Retrieves UC (Curricular Unit) information.
-                var ucCode = fields[7];
-                var ucName = fields[8];
-                var yearOfUC = Convert.ToInt32(fields[6]);
-
-                // Ensures the UC exists in the database; adds it if not.
-                var uc = _ucs.GetUCByCode(ucCode);
-                if (uc is null)
-                {
-                    uc = new UC(ucCode, ucName, courseCode, null);
-                    _ucs.AddUC(uc);
-                }
-
-                
-                var studentNumber = fields[11];
-                var studentName = fields[12];
-                var studentEmail = fields[13];
-                var specialRegime = fields[15];
-
-                // Determines if the student has a special regime.
-                var statute = !string.IsNullOrWhiteSpace(specialRegime);
-
-                // Creates a new student object.
-                var student = new Student(
-                    studentNumber,
-                    studentName,
-                    studentEmail,
-                    statute,
-                    year: yearOfUC, // Sets the student's year based on the UC.
-                    course: courseCode,
-                    partialMean: 0.0f, // Default value.
-                    username: studentEmail.Split('@')[0] // Derives username from email.
-                );
-
-                // Inserts or updates the student in the database.
-                var existingStudent = _students.GetStudentByNumber(studentNumber);
-                if (existingStudent == null)
-                {
-                    _students.InsertStudent(student);
-                }
-                else
-                {
-                    _students.UpdateStudent(student);
-                }
-            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error importing students and UCs: {ex.Message}");
+            return false;
         }
 
-        return true; 
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error importing students and UCs: {ex.Message}");
-        return false; 
-    }
-
+/*
     public void RemoveStudent(string studentNum)
     {
         if (!_students.ContainsKey(studentNum))
@@ -274,131 +276,133 @@ public bool ImportStudentsAndUCs(string fileName)
         return _shifts.Values.Where(s => s.Classroom.Number == classroomNumber).Select(s => s.ToString());
     }
 
+    */
+
 }
       public bool ImportShifts(string filePath)
+    {
+        try
         {
-            try
-            {
-                var jsonData = File.ReadAllText(filePath);
-                var shiftsData = JsonConvert.DeserializeObject<List<ShiftData>>(jsonData);
+            var jsonData = File.ReadAllText(filePath);
+            var shiftsData = JsonConvert.DeserializeObject<List<ShiftData>>(jsonData);
 
-                if (shiftsData == null)
+            if (shiftsData == null)
+            {
+                Console.WriteLine("No shift data found in the file.");
+                return false;
+            }
+
+            foreach (var shiftData in shiftsData)
+            {
+                if (shiftData == null)
                 {
-                    Console.WriteLine("No shift data found in the file.");
-                    return false;
+                    Console.WriteLine("Invalid shift data.");
+                    continue;
                 }
 
-                foreach (var shiftData in shiftsData)
+
+                var filterId = shiftData.FilterId.ToString();
+                var year = int.Parse(filterId.Substring(0, 1));
+                var semester = int.Parse(filterId.Substring(1, 1));
+                var uniqueId = int.Parse(filterId.Substring(2));
+
+                if (string.IsNullOrEmpty(shiftData.Shift))
                 {
-                    if (shiftData == null)
-                    {
-                        Console.WriteLine("Invalid shift data.");
-                        continue;
-                    }
+                    Console.WriteLine("Invalid shift data: Shift is null or empty.");
+                    continue;
+                }
+                var shiftType = Enum.Parse<Shift.ShiftType>(shiftData.Shift.Substring(0, 2));
+                var shiftNumber = uniqueId;
+                var day = GetDayOfWeek(shiftData.Day);
+                if (string.IsNullOrEmpty(shiftData.Start) || string.IsNullOrEmpty(shiftData.End))
+                {
+                    Console.WriteLine("Invalid shift data: Start time is null or empty.");
+                    continue;
+                }
+                var startHour = TimeSpan.Parse(shiftData.Start);
+                var endHour = TimeSpan.Parse(shiftData.End);
+                var courseCode = shiftData.Id;
+                var building = shiftData.Building;
+                var room = shiftData.Room;
+                var capacity = 0;
 
-                    
-                    var filterId = shiftData.FilterId.ToString();
-                    var year = int.Parse(filterId.Substring(0, 1));
-                    var semester = int.Parse(filterId.Substring(1, 1));
-                    var uniqueId = int.Parse(filterId.Substring(2));
-
-                    if (string.IsNullOrEmpty(shiftData.Shift))
-                    {
-                        Console.WriteLine("Invalid shift data: Shift is null or empty.");
-                        continue;
-                    }
-                    var shiftType = Enum.Parse<Shift.ShiftType>(shiftData.Shift.Substring(0, 2));
-                    var shiftNumber = uniqueId; 
-                    var day = GetDayOfWeek(shiftData.Day);
-                    if (string.IsNullOrEmpty(shiftData.Start) || string.IsNullOrEmpty(shiftData.End))
-                    {
-                        Console.WriteLine("Invalid shift data: Start time is null or empty.");
-                        continue;
-                    }
-                    var startHour = TimeSpan.Parse(shiftData.Start);
-                    var endHour = TimeSpan.Parse(shiftData.End);
-                    var courseCode = shiftData.Id;
-                    var building = shiftData.Building;
-                    var room = shiftData.Room;
-                    var capacity = 0; 
-
-                    if (string.IsNullOrEmpty(room))
-                    {
-                        Console.WriteLine("Invalid shift data: Room is null or empty.");
-                        continue;
-                    }
-
-                    if (string.IsNullOrEmpty(building))
-                    {
-                        Console.WriteLine("Invalid shift data: Building is null or empty.");
-                        continue;
-                    }
-
-                    if (shiftData.Theoretical)
-                    {
-                        capacity = 100;
-                    }
-                    else
-                    {
-                        capacity = 50;
-                    }
-
-                    if (string.IsNullOrEmpty(courseCode))
-                    {
-                        Console.WriteLine("Invalid shift data: Course code is null or empty.");
-                        continue;
-                    }
-                    var classroom = new Classroom(room, building, capacity.ToString());
-                    var shift = new Shift(shiftNumber, shiftType, day, startHour, capacity, courseCode, classroom);
-
-                    var existingShift = _shifts.GetShiftByNumber(shiftNumber);
-                    if (existingShift is null)
-                    {
-                        _shifts.AddShift(shift);
-                    }
-                    else
-                    {
-                        _shifts.UpdateShift(shift);
-                    }
+                if (string.IsNullOrEmpty(room))
+                {
+                    Console.WriteLine("Invalid shift data: Room is null or empty.");
+                    continue;
                 }
 
-                return true; 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error importing shifts: {ex.Message}");
-                return false; 
-            }
-        }
+                if (string.IsNullOrEmpty(building))
+                {
+                    Console.WriteLine("Invalid shift data: Building is null or empty.");
+                    continue;
+                }
 
-        private string GetDayOfWeek(int day)
-        {
-            return day switch
-            {
-                0 => "Monday",
-                1 => "Tuesday",
-                2 => "Wednesday",
-                3 => "Thursday",
-                4 => "Friday",
-                5 => "Saturday",
-                6 => "Sunday",
-                _ => throw new ArgumentOutOfRangeException(nameof(day), "Invalid day of the week")
-            };
+                if (shiftData.Theoretical)
+                {
+                    capacity = 100;
+                }
+                else
+                {
+                    capacity = 50;
+                }
+
+                if (string.IsNullOrEmpty(courseCode))
+                {
+                    Console.WriteLine("Invalid shift data: Course code is null or empty.");
+                    continue;
+                }
+                var classroom = new Classroom(room, building, capacity.ToString());
+                var shift = new Shift(shiftNumber, shiftType, day, startHour, capacity, courseCode, classroom);
+
+                var existingShift = _shifts.GetShiftByNumber(shiftNumber);
+                if (existingShift is null)
+                {
+                    _shifts.AddShift(shift);
+                }
+                else
+                {
+                    _shifts.UpdateShift(shift);
+                }
+            }
+
+            return true;
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error importing shifts: {ex.Message}");
+            return false;
+        }
+    }
+
+    private string GetDayOfWeek(int day)
+    {
+        return day switch
+        {
+            0 => "Monday",
+            1 => "Tuesday",
+            2 => "Wednesday",
+            3 => "Thursday",
+            4 => "Friday",
+            5 => "Saturday",
+            6 => "Sunday",
+            _ => throw new ArgumentOutOfRangeException(nameof(day), "Invalid day of the week")
+        };
+    }
 
         private class ShiftData
-        {
-            public string? Id { get; set; }
-            public string? Title { get; set; }
-            public bool Theoretical { get; set; }
-            public string? Shift { get; set; }
-            public string? Building { get; set; }
-            public string? Room { get; set; }
-            public int Day { get; set; }
-            public string? Start { get; set; }
-            public string? End { get; set; }
-            public int FilterId { get; set; }
-        }
+{
+    public string? Id { get; set; }
+    public string? Title { get; set; }
+    public bool Theoretical { get; set; }
+    public string? Shift { get; set; }
+    public string? Building { get; set; }
+    public string? Room { get; set; }
+    public int Day { get; set; }
+    public string? Start { get; set; }
+    public string? End { get; set; }
+    public int FilterId { get; set; }
+}
     }
     
 
