@@ -17,6 +17,11 @@ public class Student(string number, string name, string email, bool statute, int
 
     public List<Shift> GetStudentEnrollments() => _student_DAO.GetStudentEnrollments(Number);
 
+    public bool IsAvailableForShift(Shift shift) => !GetStudentEnrollments().Any(enrollment =>
+        shift.Day == enrollment.Day &&
+        shift.StartingHour <= enrollment.StartingHour && shift.EndingHour >= enrollment.StartingHour ||
+        (shift.StartingHour <= enrollment.EndingHour && shift.EndingHour >= enrollment.EndingHour));
+
     public override string ToString() => $"{Number} - {Name}";
 
     public override bool Equals(object? obj)
