@@ -265,7 +265,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
     }
 
 
-    public bool ImportShifts(string filePath)
+    public bool ImportShifts(string filePath, string courseName)
     {
         try
         {
@@ -364,7 +364,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                 // Check if the UC exists if not create it
                 if (!_ucs.UCExists(UCCode))
                 {
-                    var uc = new UC(UCCode, UCName, "Test", year, semester);
+                    var uc = new UC(UCCode, UCName, courseName, year, semester);
                     _ucs.InsertUC(uc);
                 }
 

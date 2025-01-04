@@ -25,7 +25,7 @@ public interface ISchedulePlanner
     Student? FindStudent(string studentId);
 
     bool ImportStudentsAndUCs(string filePath);
-    bool ImportShifts(string filePath);
+    bool ImportShifts(string filePath, string courseName);
 
     void AddUCS(UC uc);
 

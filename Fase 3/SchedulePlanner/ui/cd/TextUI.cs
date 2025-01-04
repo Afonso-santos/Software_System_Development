@@ -47,6 +47,7 @@ public class TextUI
         menu.SetHandler(6, () => AddStudentToShift());
         menu.SetHandler(7, () => RemoveStudentFromShift());
         menu.SetHandler(8, () => ListStudentsInShift());
+        menu.SetHandler(9, () => ImportSchedules());
 
         menu.Run(isMainMenu: true);
     }
@@ -478,6 +479,21 @@ public class TextUI
     {
         try
         {
+            // Get the course name
+            Console.Write("Course name: ");
+            string? courseName = Console.ReadLine();
+            if (courseName == null)
+            {
+                Console.WriteLine("Course name cannot be empty.");
+                return;
+            }
+
+            // Create the course if it does not exist
+            if (!this.model.GetCourses().Contains(courseName))
+            {
+                this.model.AddCourse(new Course(courseName));
+            }
+
             Console.Write("File path: ");
             string? filePath = Console.ReadLine();
             if (filePath == null)
@@ -486,7 +502,7 @@ public class TextUI
                 return;
             }
 
-            if (this.model.ImportShifts(filePath))
+            if (this.model.ImportShifts(filePath, courseName))
             {
                 Console.WriteLine("Schedules imported successfully.");
             }
@@ -560,7 +576,6 @@ public class TextUI
 
                 this.model.AddUCS(new UC(ucsCode, ucsName, ucsCourseCode, ucsYear, ucsSemester, ucsPreference));
                 Console.WriteLine("UCS added successfully.");
-                
             }
             else
             {
