@@ -34,10 +34,11 @@ CREATE TABLE IF NOT EXISTS Classroom (
 
 CREATE TABLE IF NOT EXISTS Shift (
     Num INT NOT NULL,
-    Type ENUM('T', 'TP', 'P') NOT NULL,
+    Type ENUM('T', 'TP', 'PL') NOT NULL,
     UC VARCHAR(50) NOT NULL,
     Day ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
-    Hour TIME NOT NULL,
+    StartingHour TIME NOT NULL,
+    EndingHour TIME NOT NULL,
     `Limit` INT,
     Classroom VARCHAR(50) NOT NULL,
 

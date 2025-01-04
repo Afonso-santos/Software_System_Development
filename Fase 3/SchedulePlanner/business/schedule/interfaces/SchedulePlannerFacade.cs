@@ -3,10 +3,10 @@ namespace SchedulePlanner.business.schedule.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Org.BouncyCastle.Security;
 using SchedulePlanner.business.schedule.models;
 using SchedulePlanner.Data;
 using Newtonsoft.Json;
+using static SchedulePlanner.business.schedule.models.Shift;
 
 public class SchedulePlannerFacade : ISchedulePlanner
 {
@@ -29,7 +29,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public bool StudentExists(string num) => _students.ContainsKey(num);
 
-    public bool ShiftExists(string num) => _shifts.ContainsKey(num);
+    public bool ShiftExists(string uc, ShiftType type, int number) => _shifts.ShiftExists(uc, type, number);
 
     public bool HasStudents() => false;
 
@@ -87,13 +87,18 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public void AddShift(Shift shift)
     {
-
+        _shifts.InsertShift(shift);
     }
 
-    public void RemoveShift(string shiftNumber)
+    public void RemoveShift(string uc, ShiftType type, int number)
     {
-
+        if (!_shifts.ShiftExists(uc, type, number))
+        {
+            throw new ArgumentException("Shift not found.");
+        }
+        _shifts.DeleteShift(uc, type, number);
     }
+    
 
     public void SetShiftClassroom(string shiftNum, string classroomNum)
     {
@@ -213,167 +218,56 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     }
 
-    /*
-        public void RemoveStudent(string studentNum)
+    public void RemoveStudent(string studentNum)
+    {
+        if (!_students.ContainsKey(studentNum))
         {
-            if (!_students.ContainsKey(studentNum))
-            {
-                throw new ArgumentException("Student not found.");
-            }
-            _students.Remove(studentNum);
+            throw new ArgumentException("Student not found.");
+        }
+        _students.DeleteStudent(studentNum);
+    }
+
+    public void UpdateStudent(Student student)
+    {
+        if (!_students.ContainsKey(student.Number))
+        {
+            throw new ArgumentException("Student not found.");
+        }
+        _students.UpdateStudent(student);
+    }
+
+    public void UpdateShift(Shift shift)
+    {
+        if (!_shifts.ShiftExists(shift.UCCode, shift.Type, shift.Number))
+        {
+            throw new ArgumentException("Shift not found.");
+        }
+        _shifts.UpdateShift(shift);
+    }
+
+    public void UpdateClassroom(Classroom classroom)
+    {
+        if (!_classrooms.ClassroomExists(classroom.Number))
+        {
+            throw new ArgumentException("Classroom not found.");
+        }
+        _classrooms.UpdateClassroom(classroom);
+    }
+
+    public IEnumerable<string> GetShiftsInClassroom(string classroomNumber)
+    {
+        if (!_classrooms.ClassroomExists(classroomNumber))
+        {
+            throw new ArgumentException("Classroom not found.");
         }
 
-        public void RemoveShift(string shiftNum)
-        {
-            if (!_shifts.ContainsKey(shiftNum))
-            {
-                throw new ArgumentException("Shift not found.");
-            }
-            _shifts.Remove(shiftNum);
-        }
+        return _shifts.GetAllShifts().Where(s => s.ClassroomNumber == classroomNumber).Select(s => s.ToString());
+    }
 
-        public void AddShift(Shift shift)
-        {
-            if (_shifts.ContainsKey(shift.Number))
-            {
-                throw new ArgumentException("Shift already exists.");
-            }
-            _shifts[shift.Number] = shift;
-        }
-
-        public void UpdateStudent(Student student)
-        {
-            if (!_students.ContainsKey(student.Number))
-            {
-                throw new ArgumentException("Student not found.");
-            }
-            _students[student.Number] = student;
-        }
-
-        public void UpdateShift(Shift shift)
-        {
-            if (!_shifts.ContainsKey(shift.Number))
-            {
-                throw new ArgumentException("Shift not found.");
-            }
-            _shifts[shift.Number] = shift;
-        }
-
-        public void UpdateClassroom(Classroom classroom)
-        {
-            if (!_classrooms.ContainsKey(classroom.Number))
-            {
-                throw new ArgumentException("Classroom not found.");
-            }
-            _classrooms[classroom.Number] = classroom;
-        }
-
-        public IEnumerable<string> GetShiftsInClassroom(string classroomNumber)
-        {
-            if (!_classrooms.ContainsKey(classroomNumber))
-            {
-                throw new ArgumentException("Classroom not found.");
-            }
-
-            return _shifts.Values.Where(s => s.Classroom.Number == classroomNumber).Select(s => s.ToString());
-        }
-
-        */
 
     public bool ImportShifts(string filePath)
     {
-        try
-        {
-            var jsonData = File.ReadAllText(filePath);
-            var shiftsData = JsonConvert.DeserializeObject<List<ShiftData>>(jsonData);
-
-            if (shiftsData == null)
-            {
-                Console.WriteLine("No shift data found in the file.");
-                return false;
-            }
-
-            foreach (var shiftData in shiftsData)
-            {
-                if (shiftData == null)
-                {
-                    Console.WriteLine("Invalid shift data.");
-                    continue;
-                }
-
-
-                var filterId = shiftData.FilterId.ToString();
-                var year = int.Parse(filterId.Substring(0, 1));
-                var semester = int.Parse(filterId.Substring(1, 1));
-                var uniqueId = int.Parse(filterId.Substring(2));
-
-                if (string.IsNullOrEmpty(shiftData.Shift))
-                {
-                    Console.WriteLine("Invalid shift data: Shift is null or empty.");
-                    continue;
-                }
-                var shiftType = Enum.Parse<Shift.ShiftType>(shiftData.Shift.Substring(0, 2));
-                var shiftNumber = uniqueId;
-                var day = GetDayOfWeek(shiftData.Day);
-                if (string.IsNullOrEmpty(shiftData.Start) || string.IsNullOrEmpty(shiftData.End))
-                {
-                    Console.WriteLine("Invalid shift data: Start time is null or empty.");
-                    continue;
-                }
-                var startHour = TimeSpan.Parse(shiftData.Start);
-                var endHour = TimeSpan.Parse(shiftData.End);
-                var courseCode = shiftData.Id;
-                var building = shiftData.Building;
-                var room = shiftData.Room;
-                var capacity = 0;
-
-                if (string.IsNullOrEmpty(room))
-                {
-                    Console.WriteLine("Invalid shift data: Room is null or empty.");
-                    continue;
-                }
-
-                if (string.IsNullOrEmpty(building))
-                {
-                    Console.WriteLine("Invalid shift data: Building is null or empty.");
-                    continue;
-                }
-
-                if (shiftData.Theoretical)
-                {
-                    capacity = 100;
-                }
-                else
-                {
-                    capacity = 50;
-                }
-
-                if (string.IsNullOrEmpty(courseCode))
-                {
-                    Console.WriteLine("Invalid shift data: Course code is null or empty.");
-                    continue;
-                }
-                var classroom = new Classroom(room, capacity.ToString());
-                var shift = new Shift(shiftNumber, shiftType, day, startHour, capacity, courseCode, classroom);
-
-                var existingShift = _shifts.GetShiftByNumber(shiftNumber);
-                if (existingShift is null)
-                {
-                    _shifts.AddShift(shift);
-                }
-                else
-                {
-                    _shifts.UpdateShift(shift);
-                }
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error importing shifts: {ex.Message}");
-            return false;
-        }
+        throw new NotImplementedException();
     }
 
     private string GetDayOfWeek(int day)
