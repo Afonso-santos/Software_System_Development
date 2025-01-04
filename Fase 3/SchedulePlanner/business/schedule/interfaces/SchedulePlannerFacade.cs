@@ -35,7 +35,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public bool HasClassroom(string classroomNumber)
     {
-        return _classrooms.ContainsKey(classroomNumber);
+        return _classrooms.ClassroomExists(classroomNumber);
     }
 
     public bool HasClassrooms() => _classrooms.Any();
@@ -67,11 +67,12 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public void AddClassroom(Classroom classroom)
     {
+        _classrooms.InsertClassroom(classroom);
     }
 
     public void RemoveClassroom(string classroomNumber)
     {
-
+        _classrooms.DeleteClassroom(classroomNumber);
     }
 
     public void ChangeShiftClassroom(string shiftNum, string classroomNum)
@@ -352,7 +353,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     Console.WriteLine("Invalid shift data: Course code is null or empty.");
                     continue;
                 }
-                var classroom = new Classroom(room, building, capacity.ToString());
+                var classroom = new Classroom(room, capacity.ToString());
                 var shift = new Shift(shiftNumber, shiftType, day, startHour, capacity, courseCode, classroom);
 
                 var existingShift = _shifts.GetShiftByNumber(shiftNumber);

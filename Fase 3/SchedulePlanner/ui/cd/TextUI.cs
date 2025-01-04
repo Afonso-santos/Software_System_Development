@@ -249,14 +249,6 @@ public class TextUI
             string? classroomNumber = Console.ReadLine();
             if (classroomNumber != null && !this.model.HasClassroom(classroomNumber))
             {
-                Console.WriteLine("Building: ");
-                string? building = Console.ReadLine();
-                if (building == null)
-                {
-                    Console.WriteLine("Building cannot be empty.");
-                    return;
-                }
-
                 Console.WriteLine("Capacity: ");
                 string? capacity = Console.ReadLine();
                 if (capacity == null)
@@ -264,7 +256,8 @@ public class TextUI
                     Console.WriteLine("Capacity cannot be empty.");
                     return;
                 }
-                this.model.AddClassroom(new Classroom(classroomNumber, building, capacity));
+
+                this.model.AddClassroom(new Classroom(classroomNumber, capacity));
                 Console.WriteLine("Classroom added successfully.");
             }
             else

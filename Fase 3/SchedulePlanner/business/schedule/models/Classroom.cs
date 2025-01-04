@@ -3,17 +3,15 @@ namespace SchedulePlanner.business.schedule.models;
 public class Classroom
 {
     public string Number { get; }
-    public string Building { get; }
     public string Capacity { get; }
 
-    public Classroom(string number, string building, string capacity)
+    public Classroom(string number, string capacity)
     {
         Number = number;
-        Building = building;
         Capacity = capacity;
     }
 
-    public override string ToString() => $"{Number} - {Building} - {Capacity}";
+    public override string ToString() => $"{Number} - {Capacity}";
 
     public override bool Equals(object? obj)
     {
@@ -21,7 +19,7 @@ public class Classroom
         {
             return false;
         }
-        var classroom = (Classroom) obj;
+        var classroom = (Classroom)obj;
         return Number == classroom.Number;
     }
 
