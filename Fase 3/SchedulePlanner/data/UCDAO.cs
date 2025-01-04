@@ -31,6 +31,32 @@ namespace SchedulePlanner.Data
             return null; // No UC found
         }
 
+        // Retrieve a UC by its name
+        public UC? GetUCByName(string name)
+        {
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "SELECT * FROM UC WHERE Name = @Name";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", name);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                return new UC(
+                    reader["Code"].ToString()!,
+                    reader["Name"].ToString()!,
+                    reader["Course"].ToString()!,
+                    Convert.ToInt32(reader["CourseYear"]),
+                    Convert.ToInt32(reader["Semester"]),
+                    reader["Preference"]?.ToString()
+                );
+            }
+
+            return null; // No UC found
+        }
+
         // Retrieve all UCs
         public List<UC> GetAllUCs()
         {
