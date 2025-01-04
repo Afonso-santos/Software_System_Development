@@ -67,6 +67,7 @@ public class TextUI
         {
             Console.WriteLine("New student number: ");
             string? num = Console.ReadLine();
+
             if (num != null && !this.model.StudentExists(num))
             {
                 Console.WriteLine("New student name: ");
@@ -117,15 +118,7 @@ public class TextUI
                     return;
                 }
 
-                Console.WriteLine("New student username: ");
-                string? username = Console.ReadLine();
-                if (username == null)
-                {
-                    Console.WriteLine("Student username cannot be empty.");
-                    return;
-                }
-
-                this.model.AddStudent(new Student(num, name, email, statute, year, course, partialMean, username));
+                this.model.AddStudent(new Student(num, name, email, statute, year, course, partialMean));
                 Console.WriteLine("Student added");
             }
             else

@@ -56,10 +56,9 @@ CREATE TABLE IF NOT EXISTS Student (
     Year INT NOT NULL,
     Course VARCHAR(50) NOT NULL,
     PartialMean FLOAT NOT NULL,
-    Username VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Num),
-    FOREIGN KEY (Username) REFERENCES User(Username),
+    FOREIGN KEY (Num) REFERENCES User(Username),
     FOREIGN KEY (Course) REFERENCES Course(Name)
 );
 

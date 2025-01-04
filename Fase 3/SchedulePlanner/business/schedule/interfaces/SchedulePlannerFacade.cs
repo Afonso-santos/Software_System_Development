@@ -23,7 +23,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
         _students = new StudentDAO();
         _classrooms = new ClassroomDAO();
         _shifts = new ShiftDAO();
-        _courses = new CourseDAO();
+        _courses = CourseDAO.GetInstance();
         _ucs = new UCDAO();
     }
 
@@ -149,11 +149,11 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     var courseName = fields[4];
 
                     // Ensures the course exists in the database; adds it if not.
-                    var course = _courses.GetCourseByCode(courseCode);
-                    if (course is null)
+                    if (!_courses.CourseExists(courseCode))
                     {
-                        course = new Course(courseCode, courseName);
-                        _courses.AddCourse(course);
+                        var course = _courses.GetCourseByName(courseCode);
+                        course = new Course(courseCode);
+                        _courses.InsertCourse(course);
                     }
 
                     // Retrieves UC (Curricular Unit) information.
@@ -186,8 +186,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                         statute,
                         year: yearOfUC, // Sets the student's year based on the UC.
                         course: courseCode,
-                        partialMean: 0.0f, // Default value.
-                        username: studentEmail.Split('@')[0] // Derives username from email.
+                        partialMean: 0.0f // Default value.
                     );
 
                     // Inserts or updates the student in the database.
@@ -211,75 +210,76 @@ public class SchedulePlannerFacade : ISchedulePlanner
             return false;
         }
 
-/*
-    public void RemoveStudent(string studentNum)
-    {
-        if (!_students.ContainsKey(studentNum))
-        {
-            throw new ArgumentException("Student not found.");
-        }
-        _students.Remove(studentNum);
     }
 
-    public void RemoveShift(string shiftNum)
-    {
-        if (!_shifts.ContainsKey(shiftNum))
+    /*
+        public void RemoveStudent(string studentNum)
         {
-            throw new ArgumentException("Shift not found.");
-        }
-        _shifts.Remove(shiftNum);
-    }
-
-    public void AddShift(Shift shift)
-    {
-        if (_shifts.ContainsKey(shift.Number))
-        {
-            throw new ArgumentException("Shift already exists.");
-        }
-        _shifts[shift.Number] = shift;
-    }
-
-    public void UpdateStudent(Student student)
-    {
-        if (!_students.ContainsKey(student.Number))
-        {
-            throw new ArgumentException("Student not found.");
-        }
-        _students[student.Number] = student;
-    }
-
-    public void UpdateShift(Shift shift)
-    {
-        if (!_shifts.ContainsKey(shift.Number))
-        {
-            throw new ArgumentException("Shift not found.");
-        }
-        _shifts[shift.Number] = shift;
-    }
-
-    public void UpdateClassroom(Classroom classroom)
-    {
-        if (!_classrooms.ContainsKey(classroom.Number))
-        {
-            throw new ArgumentException("Classroom not found.");
-        }
-        _classrooms[classroom.Number] = classroom;
-    }
-
-    public IEnumerable<string> GetShiftsInClassroom(string classroomNumber)
-    {
-        if (!_classrooms.ContainsKey(classroomNumber))
-        {
-            throw new ArgumentException("Classroom not found.");
+            if (!_students.ContainsKey(studentNum))
+            {
+                throw new ArgumentException("Student not found.");
+            }
+            _students.Remove(studentNum);
         }
 
-        return _shifts.Values.Where(s => s.Classroom.Number == classroomNumber).Select(s => s.ToString());
-    }
+        public void RemoveShift(string shiftNum)
+        {
+            if (!_shifts.ContainsKey(shiftNum))
+            {
+                throw new ArgumentException("Shift not found.");
+            }
+            _shifts.Remove(shiftNum);
+        }
 
-    */
+        public void AddShift(Shift shift)
+        {
+            if (_shifts.ContainsKey(shift.Number))
+            {
+                throw new ArgumentException("Shift already exists.");
+            }
+            _shifts[shift.Number] = shift;
+        }
 
-}
-      public bool ImportShifts(string filePath)
+        public void UpdateStudent(Student student)
+        {
+            if (!_students.ContainsKey(student.Number))
+            {
+                throw new ArgumentException("Student not found.");
+            }
+            _students[student.Number] = student;
+        }
+
+        public void UpdateShift(Shift shift)
+        {
+            if (!_shifts.ContainsKey(shift.Number))
+            {
+                throw new ArgumentException("Shift not found.");
+            }
+            _shifts[shift.Number] = shift;
+        }
+
+        public void UpdateClassroom(Classroom classroom)
+        {
+            if (!_classrooms.ContainsKey(classroom.Number))
+            {
+                throw new ArgumentException("Classroom not found.");
+            }
+            _classrooms[classroom.Number] = classroom;
+        }
+
+        public IEnumerable<string> GetShiftsInClassroom(string classroomNumber)
+        {
+            if (!_classrooms.ContainsKey(classroomNumber))
+            {
+                throw new ArgumentException("Classroom not found.");
+            }
+
+            return _shifts.Values.Where(s => s.Classroom.Number == classroomNumber).Select(s => s.ToString());
+        }
+
+        */
+
+    public bool ImportShifts(string filePath)
     {
         try
         {
@@ -390,21 +390,21 @@ public class SchedulePlannerFacade : ISchedulePlanner
         };
     }
 
-        private class ShiftData
-{
-    public string? Id { get; set; }
-    public string? Title { get; set; }
-    public bool Theoretical { get; set; }
-    public string? Shift { get; set; }
-    public string? Building { get; set; }
-    public string? Room { get; set; }
-    public int Day { get; set; }
-    public string? Start { get; set; }
-    public string? End { get; set; }
-    public int FilterId { get; set; }
-}
+    private class ShiftData
+    {
+        public string? Id { get; set; }
+        public string? Title { get; set; }
+        public bool Theoretical { get; set; }
+        public string? Shift { get; set; }
+        public string? Building { get; set; }
+        public string? Room { get; set; }
+        public int Day { get; set; }
+        public string? Start { get; set; }
+        public string? End { get; set; }
+        public int FilterId { get; set; }
     }
-    
+}
+
 
 
 

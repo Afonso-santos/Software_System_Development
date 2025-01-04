@@ -1,5 +1,3 @@
-using SchedulePlanner.Data;
-
 namespace SchedulePlanner.business.schedule.models
 {
     public class UC
@@ -9,7 +7,6 @@ namespace SchedulePlanner.business.schedule.models
         public string CourseCode { get; }
         public string? Preference { get; }
 
-        private readonly CourseDAO courseDAO;
 
         public UC(string code, string name, string courseCode, string? preference = null)
         {
@@ -17,7 +14,6 @@ namespace SchedulePlanner.business.schedule.models
             Name = name;
             CourseCode = courseCode;
             Preference = preference;
-            courseDAO = new CourseDAO();
         }
 
         public override string ToString() =>
