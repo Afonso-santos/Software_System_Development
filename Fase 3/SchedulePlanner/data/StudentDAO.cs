@@ -136,6 +136,38 @@ namespace SchedulePlanner.Data
             return null;
         }
 
+        // Get students by year
+        public List<Student> GetStudentsByYear(int year)
+        {
+            var students = new List<Student>();
+
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT * FROM Student WHERE Year = @Year";
+
+                using var command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Year", year);
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var student = new Student(
+                        reader["Num"].ToString()!,
+                        reader["Name"].ToString()!,
+                        reader["Email"].ToString()!,
+                        Convert.ToBoolean(reader["Statute"]),
+                        Convert.ToInt32(reader["Year"]),
+                        reader["Course"].ToString()!,
+                        Convert.ToSingle(reader["PartialMean"])
+                    );
+                    students.Add(student);
+                }
+            }
+
+            return students;
+        }
+
         /// <summary>
         /// Updates an existing student's information in the database.
         /// </summary>

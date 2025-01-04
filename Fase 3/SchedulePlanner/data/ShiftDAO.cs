@@ -45,6 +45,42 @@ namespace SchedulePlanner.Data
             return null;
         }
 
+        // Get shifts by UC
+        public List<Shift> GetShiftsByUC(string ucCode)
+        {
+            var shifts = new List<Shift>();
+
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = @"SELECT Num, Type, UC, Day, StartingHour, EndingHour, `Limit`, Classroom
+                              FROM Shift
+                              WHERE UC = @UC";
+
+                using var command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UC", ucCode);
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    // Extract shift data
+                    var shiftNum = Convert.ToInt32(reader["Num"]);
+                    var shiftType = Enum.Parse<Shift.ShiftType>(reader["Type"].ToString()!);
+                    var ucCodeFromShift = reader["UC"].ToString()!;
+                    var day = reader["Day"].ToString()!;
+                    var startingHour = TimeSpan.Parse(reader["StartingHour"].ToString()!);
+                    var endingHour = TimeSpan.Parse(reader["EndingHour"].ToString()!);
+                    var capacity = reader["Limit"] != DBNull.Value ? Convert.ToInt32(reader["Limit"]) : 0;
+                    var classroomNumber = reader["Classroom"].ToString()!;
+
+                    // Create the shift object without fetching students
+                    shifts.Add(new Shift(shiftNum, shiftType, day, startingHour, endingHour, capacity, ucCodeFromShift, classroomNumber, new List<string>()));
+                }
+            }
+
+            return shifts;
+        }
+
         public List<Shift> GetShiftsByCourse(string courseCode)
         {
             var shifts = new List<Shift>();

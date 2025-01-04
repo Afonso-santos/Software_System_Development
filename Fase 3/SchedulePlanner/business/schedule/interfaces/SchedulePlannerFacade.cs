@@ -67,7 +67,32 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
         foreach (UC uc in ucs)
         {
+            // Get the students of the same year as the UC sorted by statute
+            List<Student> students = _students.GetStudentsByYear(uc.CourseYear).OrderBy(s => s.Statute).ToList();
 
+            // Get the shifts of the UC
+            List<Shift> shifts = _shifts.GetShiftsByUC(uc.Code);
+
+            // Allocate students to shifts
+            foreach (Student student in students)
+            {
+                foreach (Shift shift in shifts)
+                {
+                    if (shift.Capacity <= 0) {
+                        continue;
+                    }
+
+                    // TODO student.isAvailableForShift(shift)
+                    // if (student.isAvailableForShift(shift)) {
+                    if (true) {
+                        System.Console.WriteLine($"Allocating student {student.Number} to shift {shift.Number} of UC {uc.Code}");
+                    }
+                    else
+                    {
+                        System.Console.WriteLine($"Student {student.Number} is not available for shift {shift.Number} of UC {uc.Code}");
+                    }
+                }
+            }
         }
     }
 
@@ -299,7 +324,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     continue;
                 }
                 // Parse the shift type and number
-                var shiftNumber = '0';
+                var shiftNumber = 0;
                 var shiftType = "";
                 try {
                     // scrape the digits from the end of the string
@@ -308,7 +333,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     {
                         if (char.IsDigit(shiftData.Shift[i]))
                         {
-                            shiftNumber = shiftData.Shift[i];
+                            shiftNumber = shiftNumber * 10 + (shiftData.Shift[i] - '0');
                         }
                         else
                         {
@@ -371,7 +396,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                 }
 
                 // Prepend the building to the room string
-                room = building + room;
+                room = building + "." + room;
                 // instanciate the classroom
                 var classroom = new Classroom(room, capacity.ToString());
                 if (!_classrooms.ClassroomExists(room))
