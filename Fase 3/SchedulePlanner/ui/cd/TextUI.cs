@@ -34,7 +34,7 @@ public class TextUI
             "Remove Student from Shift",
             "List Students in Shift",
             "Import Students",
-            "Import Schedules"
+            "Enrollement Operations"
         });
 
         // menu.SetPreCondition(3, () => this.model.HasClassrooms());
@@ -50,7 +50,7 @@ public class TextUI
         menu.SetHandler(7, () => RemoveStudentFromShift());
         menu.SetHandler(8, () => ListStudentsInShift());
         menu.SetHandler(9, () => importStudentFromFile());
-        menu.SetHandler(10, () => ImportSchedules());
+        menu.SetHandler(10, () => ManageEnrollement());
 
         menu.Run(isMainMenu: true);
     }
@@ -719,4 +719,153 @@ public class TextUI
             Console.WriteLine(e.Message);
         }
     }
+
+    private void ManageEnrollement()
+    {
+        var menu = new Menu("Enrollement Management", new[]
+        {
+            "Enroll Student",
+            "Unenroll Student",
+            "List Enrolled Students"
+        });
+
+        menu.SetHandler(1, () => EnrollStudent());
+        menu.SetHandler(2, () => UnenrollStudent());
+        menu.SetHandler(3, () => ListEnrolledStudents());
+
+        menu.Run();
+    }
+
+    private void EnrollStudent()
+    {
+        try
+        {
+            Console.WriteLine("Student number: ");
+            string? studentNumber = Console.ReadLine();
+            if (studentNumber == null)
+            {
+                Console.WriteLine("Student number cannot be empty.");
+                return;
+            }
+
+            Console.WriteLine("Shift UC code: ");
+            string? ucCode = Console.ReadLine();
+            if (ucCode == null)
+            {
+                Console.WriteLine("UC code cannot be empty.");
+                return;
+            }
+
+            Console.WriteLine("Shift type (T, TP, PL): ");
+            string? typeInput = Console.ReadLine()?.ToUpper();
+            if (typeInput == null || !Enum.TryParse<ShiftType>(typeInput, out ShiftType type))
+            {
+                Console.WriteLine("Shift type must be a valid type.");
+                return;
+            }
+
+            Console.WriteLine("Shift number: ");
+            string? shiftNumberInput = Console.ReadLine();
+            if (shiftNumberInput == null || !int.TryParse(shiftNumberInput, out int shiftNumber))
+            {
+                Console.WriteLine("Shift number must be a valid integer.");
+                return;
+            }
+
+            var shift = this.model.GetShift(ucCode, type, shiftNumber);
+            if (shift == null)
+            {
+                Console.WriteLine("Shift not found.");
+                return;
+            }
+
+            shift.EnrollStudentOnShift(studentNumber);
+            Console.WriteLine("Student enrolled successfully.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error enrolling student: " + e.Message);
+        }
+    }
+
+    private void UnenrollStudent()
+    {
+        try
+        {
+            Console.WriteLine("Student number: ");
+            string? studentNumber = Console.ReadLine();
+            if (studentNumber == null)
+            {
+                Console.WriteLine("Student number cannot be empty.");
+                return;
+            }
+
+            Console.WriteLine("Shift UC code: ");
+            string? ucCode = Console.ReadLine();
+            if (ucCode == null)
+            {
+                Console.WriteLine("UC code cannot be empty.");
+                return;
+            }
+
+            Console.WriteLine("Shift type (T, TP, PL): ");
+            string? typeInput = Console.ReadLine()?.ToUpper();
+            if (typeInput == null || !Enum.TryParse<ShiftType>(typeInput, out ShiftType type))
+            {
+                Console.WriteLine("Shift type must be a valid type.");
+                return;
+            }
+
+            Console.WriteLine("Shift number: ");
+            string? shiftNumberInput = Console.ReadLine();
+            if (shiftNumberInput == null || !int.TryParse(shiftNumberInput, out int shiftNumber))
+            {
+                Console.WriteLine("Shift number must be a valid integer.");
+                return;
+            }
+
+            var shift = this.model.GetShift(ucCode, type, shiftNumber);
+            if (shift == null)
+            {
+                Console.WriteLine("Shift not found.");
+                return;
+            }
+
+            shift.UnrollStudentFromShift(studentNumber);
+            Console.WriteLine("Student unenrolled successfully.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error unenrolling student: " + e.Message);
+        }
+    }
+
+    private void ListEnrolledStudents()
+    {
+        try
+        {
+            Console.WriteLine("Student number: ");
+            string? studentNumber = Console.ReadLine();
+            if (studentNumber == null)
+            {
+                Console.WriteLine("Student number cannot be empty.");
+                return;
+            }
+
+            if (!this.model.StudentExists(studentNumber))
+            {
+                Console.WriteLine("This student number does not exist!");
+                return;
+            }
+
+            var enrollments = this.model.GetStudentEnrollments(studentNumber);
+            Console.WriteLine("Enrolled shifts for student " + studentNumber + ":");
+            Console.WriteLine(string.Join("\n", enrollments.Select(e => e.ToString())));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error listing enrolled shifts: " + e.Message);
+        }
+    }
+
 }

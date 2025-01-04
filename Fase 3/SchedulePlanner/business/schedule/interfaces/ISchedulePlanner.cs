@@ -45,4 +45,6 @@ public interface ISchedulePlanner
     void UpdateClassroom(Classroom classroom);
     IEnumerable<string> GetShiftsInClassroom(string classroomId);
 
+    Shift? GetShift(string uc, ShiftType type, int number);
+    IEnumerable<Shift> GetStudentEnrollments(string studentNumber);
 }
