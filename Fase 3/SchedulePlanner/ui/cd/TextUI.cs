@@ -31,6 +31,7 @@ public class TextUI
             "Shift Operations",
             "Classroom Operations",
             "Add Student to Shift",
+            "Add Students to Shifts Automatically",
             "Remove Student from Shift",
             "List Students in Shift",
             "Import Students",
@@ -47,10 +48,11 @@ public class TextUI
         menu.SetHandler(4, () => ManageShifts());
         menu.SetHandler(5, () => ManageClassrooms());
         menu.SetHandler(6, () => AddStudentToShift());
-        menu.SetHandler(7, () => RemoveStudentFromShift());
-        menu.SetHandler(8, () => ListStudentsInShift());
-        menu.SetHandler(9, () => importStudentFromFile());
-        menu.SetHandler(10, () => ImportSchedules());
+        menu.SetHandler(7, () => AllocateAllStudents());
+        menu.SetHandler(8, () => RemoveStudentFromShift());
+        menu.SetHandler(9, () => ListStudentsInShift());
+        menu.SetHandler(10, () => importStudentFromFile());
+        menu.SetHandler(11, () => ImportSchedules());
 
         menu.Run(isMainMenu: true);
     }
@@ -425,6 +427,18 @@ public class TextUI
         catch (Exception e)
         {
             Console.WriteLine("Error adding student to shift: " + e.Message);
+        }
+    }
+
+    private void AllocateAllStudents()
+    {
+        try
+        {
+            this.model.AllocateAllStudents();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error allocating students: " + e.Message);
         }
     }
 
