@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS UC (
     Name VARCHAR(100) NOT NULL,
     Course VARCHAR(100) NOT NULL,
     Preference VARCHAR(200),
-    COURSE_YEAR INT NOT NULL,
-    SEMESTER INT NOT NULL,
+    CourseYear INT NOT NULL,
+    Semester INT NOT NULL,
     PRIMARY KEY (Code),
     FOREIGN KEY (Course) REFERENCES Course(Name)
 );

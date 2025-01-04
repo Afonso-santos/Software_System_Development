@@ -165,8 +165,8 @@ public class SchedulePlannerFacade : ISchedulePlanner
                     var uc = _ucs.GetUCByCode(ucCode);
                     if (uc is null)
                     {
-                        uc = new UC(ucCode, ucName, courseCode, null);
-                        _ucs.AddUC(uc);
+                        // uc = new UC(ucCode, ucName, courseCode, null);
+                        // _ucs.AddUC(uc);
                     }
 
 

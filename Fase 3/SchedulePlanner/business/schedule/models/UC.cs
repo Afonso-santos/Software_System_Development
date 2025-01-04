@@ -1,23 +1,18 @@
 namespace SchedulePlanner.business.schedule.models
 {
-    public class UC
+    public class UC(string code, string name, string courseCode, int courseYear, int semester, string? preference = null)
     {
-        public string Code { get; }
-        public string Name { get; }
-        public string CourseCode { get; }
-        public string? Preference { get; }
+        public string Code { get; } = code;
+        public string Name { get; } = name;
+        public string CourseCode { get; } = courseCode;
+        public string? Preference { get; } = preference;
 
+        public int CourseYear { get; } = courseYear;
 
-        public UC(string code, string name, string courseCode, string? preference = null)
-        {
-            Code = code;
-            Name = name;
-            CourseCode = courseCode;
-            Preference = preference;
-        }
+        public int Semester { get; } = semester;
 
         public override string ToString() =>
-            $"{Code} - {Name} (Course: {CourseCode}, Preference: {Preference ?? "None"})";
+            $"{Code} - {Name} (Course: {CourseCode}, Preference: {Preference ?? "None"}) - Year: {CourseYear}, Semester: {Semester}";
 
         public override bool Equals(object? obj)
         {
