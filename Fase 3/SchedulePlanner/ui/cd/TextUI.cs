@@ -25,6 +25,8 @@ public class TextUI
         var menu = new Menu(new[]
         {
             "Student Operations",
+            "Course Operations",
+            "UCS Operations",
             "Shift Operations",
             "Classroom Operations",
             "Add Student to Shift",
@@ -38,12 +40,13 @@ public class TextUI
         // menu.SetPreCondition(5, () => this.model.HasShiftsWithStudents());
 
         menu.SetHandler(1, () => ManageStudents());
-        menu.SetHandler(2, () => ManageShifts());
-        menu.SetHandler(3, () => ManageClassrooms());
-        menu.SetHandler(4, () => AddStudentToShift());
-        menu.SetHandler(5, () => RemoveStudentFromShift());
-        menu.SetHandler(6, () => ListStudentsInShift());
-        menu.SetHandler(7, () => ImportSchedules());
+        menu.SetHandler(2, () => ManageCourses());
+        menu.SetHandler(3, () => ManageUCS());
+        menu.SetHandler(4, () => ManageShifts());
+        menu.SetHandler(5, () => ManageClassrooms());
+        menu.SetHandler(6, () => AddStudentToShift());
+        menu.SetHandler(7, () => RemoveStudentFromShift());
+        menu.SetHandler(8, () => ListStudentsInShift());
 
         menu.Run(isMainMenu: true);
     }
@@ -493,4 +496,189 @@ public class TextUI
             Console.WriteLine("Error importing schedules: " + e.Message);
         }
     }
+
+    private void ManageUCS()
+    {
+        var menu = new Menu("UCS Management", new[]
+        {
+            "Add UCS",
+            "Remove UCS",
+            "List UCS"
+        });
+
+        menu.SetHandler(1, () => AddUCS());
+        menu.SetHandler(2, () => RemoveUCS());
+        menu.SetHandler(3, () => ListUCS());
+
+        menu.Run();
+    }
+
+    private void AddUCS()
+    {
+        try
+        {
+            Console.WriteLine("UCS code: ");
+            string? ucsCode = Console.ReadLine();
+            if (ucsCode != null)
+            {
+                Console.WriteLine("UCS name: ");
+                string? ucsName = Console.ReadLine();
+                if (ucsName == null)
+                {
+                    Console.WriteLine("UCS name cannot be empty.");
+                    return;
+                }
+
+                Console.WriteLine("UCS course code: ");
+                string? ucsCourseCode = Console.ReadLine();
+                if (ucsCourseCode == null)
+                {
+                    Console.WriteLine("UCS course code cannot be empty.");
+                    return;
+                }
+
+                Console.WriteLine("UCS preference: ");
+                string? ucsPreference = Console.ReadLine();
+
+                Console.WriteLine("UCS year: ");
+                string? ucsYearInput = Console.ReadLine();
+                if (ucsYearInput == null || !int.TryParse(ucsYearInput, out int ucsYear))
+                {
+                    Console.WriteLine("UCS year must be a valid integer.");
+                    return;
+                }
+
+
+                Console.WriteLine("UCS semester: ");
+                string? ucsSemesterInput = Console.ReadLine();
+                if (ucsSemesterInput == null || !int.TryParse(ucsSemesterInput, out int ucsSemester))
+                {
+                    Console.WriteLine("UCS semester must be a valid integer.");
+                    return;
+                }
+
+
+                this.model.AddUCS(new UC(ucsCode, ucsName, ucsCourseCode, ucsYear, ucsSemester, ucsPreference));
+                Console.WriteLine("UCS added successfully.");
+                
+            }
+            else
+            {
+                Console.WriteLine("This UCS already exists!");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error adding UCS: " + e.Message);
+        }
+    }
+
+    private void RemoveUCS()
+    {
+        try
+        {
+            Console.WriteLine("UCS code to remove: ");
+            string? ucsCode = Console.ReadLine();
+            if (ucsCode != null )
+            {
+                this.model.RemoveUCS(ucsCode);
+                Console.WriteLine("UCS removed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("This UCS does not exist!");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error removing UCS: " + e.Message);
+        }
+    }
+
+
+    private void ListUCS()
+    {
+        try
+        {
+            Console.WriteLine(string.Join("\n", this.model.GetUCs()));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+
+    private void ManageCourses()
+    {
+        var menu = new Menu("Courses Management", new[]
+        {
+            "Add Course",
+            "Remove Course",
+            "List Courses"
+        });
+
+        menu.SetHandler(1, () => AddCourse());
+        menu.SetHandler(2, () => RemoveCourse());
+        menu.SetHandler(3, () => ListCourses());
+
+        menu.Run();
+    }
+
+    private void AddCourse()
+    {
+        try
+        {
+            Console.WriteLine("Course name: ");
+            string? courseName = Console.ReadLine();
+            if (courseName != null)
+            {
+                this.model.AddCourse(new Course(courseName));
+                Console.WriteLine("Course added successfully.");
+            }
+            else
+            {
+                Console.WriteLine("This course already exists!");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error adding course: " + e.Message);
+        }
+    }
+
+    private void RemoveCourse()
+    {
+        try
+        {
+            Console.WriteLine("Course name to remove: ");
+            string? courseName = Console.ReadLine();
+            if (courseName != null )
+            {
+                this.model.RemoveCourse(courseName);
+                Console.WriteLine("Course removed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("This course does not exist!");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error removing course: " + e.Message);
+        }
+    }
+
+    private void ListCourses()
+    {
+        try
+        {
+            Console.WriteLine(string.Join("\n", this.model.GetCourses()));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
 }

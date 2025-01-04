@@ -424,8 +424,34 @@ public class SchedulePlannerFacade : ISchedulePlanner
         public string? End { get; set; }
         public int FilterId { get; set; }
     }
+
+    public void AddUCS(UC uc)
+    {
+        _ucs.InsertUC(uc);
+    }
+
+    public void RemoveUCS( string code)
+    {
+        _ucs.DeleteUC(code);
+    }
+
+    public IEnumerable<string> GetUCs()
+    {
+        return _ucs.GetAllUCs().Select(uc => uc.ToString());
+    }
+
+    public void AddCourse(Course course)
+    {
+        _courses.InsertCourse(course);
+    }
+
+    public void RemoveCourse(string courseCode)
+    {
+        _courses.DeleteCourse(courseCode);
+    }
+    public IEnumerable<string> GetCourses()
+    {
+        return _courses.GetAllCourses().Select(course => course.ToString());
+    }
+
 }
-
-
-
-
