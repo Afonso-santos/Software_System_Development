@@ -251,9 +251,9 @@ namespace SchedulePlanner.Data
                     var shiftUC = reader["ShiftUC"].ToString()!;
 
                     var shift = _shifts_DAO.GetShift(shiftUC, shiftType, shiftNumber);
-                    if (shift != null)
+                    if (shift is not null)
                     {
-                        shifts.Add(shift);
+                        shifts.Add(shift!);
                     }
                 }
             }

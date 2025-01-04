@@ -510,4 +510,19 @@ public class SchedulePlannerFacade : ISchedulePlanner
     {
         return _courses.CourseExists(courseCode);
     }
+
+    public Shift? GetShift(string uc, ShiftType type, int number)
+    {
+        return _shifts.GetShift(uc, type, number);
+    }
+
+    public IEnumerable<Shift> GetStudentEnrollments(string studentNumber)
+    {
+        var student = _students.GetStudentByNumber(studentNumber);
+        if (student == null)
+        {
+            throw new ArgumentException("Student not found.");
+        }
+        return student.GetStudentEnrollments();
+    }
 }
