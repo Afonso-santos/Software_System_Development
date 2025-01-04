@@ -4,14 +4,7 @@ class Program
 {
     public static void Main()
     {
-        var users = new Dictionary<string, (string Password, bool isAdmin)>()
-        {
-            { "admin",    ("admin",     true)  },
-            { "student1", ("password1", false) },
-            { "student2", ("password2", false) }
-        };
-
-        var loginService = new LoginService(users);
+        var loginService = new LoginService();
 
         Console.WriteLine("Welcome to Schedule Planner!");
 

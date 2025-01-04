@@ -62,4 +62,36 @@ public class TextUI
             Console.WriteLine("Error exporting schedule: " + e.Message);
         }
     }
+
+    private void ImportStudents() {
+        try
+        {
+           // Importing students from csv file 
+            Console.WriteLine("Importing students from csv file");
+            Console.WriteLine("File name: ");
+            var fileName = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                Console.WriteLine("File name cannot be null or empty.");
+                return;
+            }
+
+            bool imported = this.model.ImportStudentsAndUCs(fileName);
+            if (imported)
+            {
+                Console.WriteLine("Students imported successfully.");
+            }
+            else
+            {
+                Console.WriteLine("No students imported. Please check the file and try again.");
+            }
+            
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error importing students: " + e.Message);
+        }
+    }
 }

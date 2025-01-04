@@ -1,17 +1,15 @@
 namespace SchedulePlanner.business.schedule.models;
 
-public class Student
+public class Student(string number, string name, string email, bool statute, int year, string course, float partialMean, string username)
 {
-    public string Number { get; }
-    public string Name { get; }
-    public string Email { get; }
-
-    public Student(string number, string name, string email)
-    {
-        Number = number;
-        Name = name;
-        Email = email;
-    }
+    public string Number { get; } = number;
+    public string Name { get; } = name;
+    public string Email { get; } = email;
+    public bool Statute { get; } = statute;
+    public int Year { get; } = year;
+    public string Course { get; } = course;
+    public float PartialMean { get; } = partialMean;
+    public string Username { get; } = username;
 
     public override string ToString() => $"{Number} - {Name}";
 
@@ -21,14 +19,12 @@ public class Student
         {
             return false;
         }
-        var student = (Student) obj;
+        var student = (Student)obj;
         return Number == student.Number;
     }
 
-    // Used to compare two objects of the same type
     public override int GetHashCode() => Number.GetHashCode();
 
-    // Compare two students by their number
     public static bool operator ==(Student? a, Student? b)
     {
         if (ReferenceEquals(a, null) && ReferenceEquals(b, null)) return true;
@@ -38,8 +34,6 @@ public class Student
         return a.Number == b.Number;
     }
 
-    public static bool operator !=(Student? a, Student? b)
-    {
-        return !(a == b);
-    }
+    public static bool operator !=(Student? a, Student? b) => !(a == b);
 }
+

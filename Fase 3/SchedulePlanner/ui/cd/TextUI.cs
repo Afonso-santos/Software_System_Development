@@ -31,9 +31,9 @@ public class TextUI
             "List Students in Shift"
         });
 
-        menu.SetPreCondition(3, () => this.model.HasClassrooms());
-        menu.SetPreCondition(4, () => this.model.HasStudents() && this.model.HasShifts());
-        menu.SetPreCondition(5, () => this.model.HasShiftsWithStudents());
+        // menu.SetPreCondition(3, () => this.model.HasClassrooms());
+        // menu.SetPreCondition(4, () => this.model.HasStudents() && this.model.HasShifts());
+        // menu.SetPreCondition(5, () => this.model.HasShiftsWithStudents());
 
         menu.SetHandler(1, () => ManageStudents());
         menu.SetHandler(2, () => ManageShifts());
@@ -85,7 +85,47 @@ public class TextUI
                     return;
                 }
 
-                this.model.AddStudent(new Student(num, name, email));
+                Console.WriteLine("New student statute: ");
+                string? statuteInput = Console.ReadLine();
+                if (statuteInput == null || !bool.TryParse(statuteInput, out bool statute))
+                {
+                    Console.WriteLine("Student statute must be a valid boolean.");
+                    return;
+                }
+
+                Console.WriteLine("New student year: ");
+                string? yearInput = Console.ReadLine();
+                if (yearInput == null || !int.TryParse(yearInput, out int year))
+                {
+                    Console.WriteLine("Student year cannot be empty.");
+                    return;
+                }
+
+                Console.WriteLine("New student course: ");
+                string? course = Console.ReadLine();
+                if (course == null)
+                {
+                    Console.WriteLine("Student course cannot be empty.");
+                    return;
+                }
+
+                Console.WriteLine("New student partial mean: ");
+                string? partialMeanInput = Console.ReadLine();
+                if (partialMeanInput == null || !float.TryParse(partialMeanInput, out float partialMean))
+                {
+                    Console.WriteLine("Student partial mean must be a valid float.");
+                    return;
+                }
+
+                Console.WriteLine("New student username: ");
+                string? username = Console.ReadLine();
+                if (username == null)
+                {
+                    Console.WriteLine("Student username cannot be empty.");
+                    return;
+                }
+
+                this.model.AddStudent(new Student(num, name, email, statute, year, course, partialMean, username));
                 Console.WriteLine("Student added");
             }
             else
@@ -107,7 +147,8 @@ public class TextUI
             string? num = Console.ReadLine();
             if (num != null && this.model.StudentExists(num))
             {
-                Console.WriteLine(this.model.FindStudent(num).ToString());
+                var student = model.FindStudent(num);
+                Console.WriteLine(student?.ToString());
             }
             else
             {

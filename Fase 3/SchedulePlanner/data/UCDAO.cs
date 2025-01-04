@@ -1,0 +1,143 @@
+using System;
+using System.Collections.Generic;
+using MySql.Data.MySqlClient;
+using SchedulePlanner.Data;
+using SchedulePlanner.business.schedule.models;
+
+namespace SchedulePlanner.Data
+{
+    public class UCDAO
+    {
+        // Retrieve a UC by its code
+        public UC? GetUCByCode(string code)
+        {
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT * FROM UC WHERE Code = @Code";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Code", code);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new UC(
+                                reader["Code"].ToString()!,
+                                reader["Name"].ToString()!,
+                                reader["Course"].ToString()!,
+                                reader["Preference"]?.ToString()
+                            );
+                        }
+                    }
+                }
+            }
+
+            return null; // No UC found
+        }
+
+        // Retrieve all UCs
+        public List<UC> GetAllUCs()
+        {
+            var ucs = new List<UC>();
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT * FROM UC";
+
+                using (var command = new MySqlCommand(query, connection))
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ucs.Add(new UC(
+                            reader["Code"].ToString()!,
+                            reader["Name"].ToString()!,
+                            reader["Course"].ToString()!,
+                            reader["Preference"]?.ToString()
+                        ));
+                    }
+                }
+            }
+
+            return ucs;
+        }
+
+        // Add a new UC
+        public void AddUC(UC uc)
+        {
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = @"INSERT INTO UC (Code, Name, Course, Preference) 
+                              VALUES (@Code, @Name, @Course, @Preference)";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Code", uc.Code);
+                    command.Parameters.AddWithValue("@Name", uc.Name);
+                    command.Parameters.AddWithValue("@Course", uc.CourseCode);
+                    command.Parameters.AddWithValue("@Preference", uc.Preference);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Update an existing UC
+        public void UpdateUC(UC uc)
+        {
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = @"UPDATE UC 
+                              SET Name = @Name, Course = @Course, Preference = @Preference 
+                              WHERE Code = @Code";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Code", uc.Code);
+                    command.Parameters.AddWithValue("@Name", uc.Name);
+                    command.Parameters.AddWithValue("@Course", uc.CourseCode);
+                    command.Parameters.AddWithValue("@Preference", uc.Preference);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Delete a UC by its code
+        public void DeleteUC(string code)
+        {
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = "DELETE FROM UC WHERE Code = @Code";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Code", code);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Check if a UC exists by its code
+        public bool UCExists(string code)
+        {
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT COUNT(*) FROM UC WHERE Code = @Code";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Code", code);
+                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
+                }
+            }
+        }
+    }
+}
