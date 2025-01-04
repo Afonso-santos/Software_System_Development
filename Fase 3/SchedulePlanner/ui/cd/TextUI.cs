@@ -49,12 +49,12 @@ public class TextUI
         menu.SetHandler(4, () => ManageShifts());
         menu.SetHandler(5, () => ManageClassrooms());
         menu.SetHandler(6, () => AddStudentToShift());
-        menu.SetHandler(8, () => AllocateAllStudents());
-        menu.SetHandler(9, () => RemoveStudentFromShift());
-        menu.SetHandler(10, () => ListStudentsInShift());
-        menu.SetHandler(11, () => importStudentFromFile());
-        menu.SetHandler(12, () => ImportSchedules());
-        menu.SetHandler(7, () => ManageEnrollement());
+        menu.SetHandler(7, () => AllocateAllStudents());
+        menu.SetHandler(8, () => RemoveStudentFromShift());
+        menu.SetHandler(9, () => ListStudentsInShift());
+        menu.SetHandler(10, () => importStudentFromFile());
+        menu.SetHandler(11, () => ImportSchedules());
+        menu.SetHandler(12, () => ManageEnrollement());
 
         menu.Run(isMainMenu: true);
     }
@@ -772,7 +772,7 @@ public class TextUI
                 return;
             }
 
-            Console.WriteLine("Shift type (T, TP, PL): ");
+            Console.WriteLine("Shift type (0: T; 1: TP; 2: PL): ");
             string? typeInput = Console.ReadLine()?.ToUpper();
             if (typeInput == null || !Enum.TryParse<ShiftType>(typeInput, out ShiftType type))
             {
@@ -826,7 +826,7 @@ public class TextUI
                 return;
             }
 
-            Console.WriteLine("Shift type (T, TP, PL): ");
+            Console.WriteLine("Shift type (0: T; 1: TP; 2: PL): ");
             string? typeInput = Console.ReadLine()?.ToUpper();
             if (typeInput == null || !Enum.TryParse<ShiftType>(typeInput, out ShiftType type))
             {
