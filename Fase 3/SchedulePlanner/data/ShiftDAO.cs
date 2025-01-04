@@ -6,7 +6,23 @@ namespace SchedulePlanner.Data
 {
     public class ShiftDAO
     {
-        public Shift? GetShiftByNumber(string uc, ShiftType type, int shiftNumber)
+        private static ShiftDAO? _instance;
+
+        // Private constructor to prevent instantiation
+        private ShiftDAO() { }
+
+        /// <summary>
+        /// Public method to retrieve the single instance of UserDAO.
+        /// </summary>
+        /// <returns>The singleton instance of UserDAO.</returns>
+
+        public static ShiftDAO GetInstance()
+        {
+            _instance ??= new ShiftDAO();
+            return _instance;
+        }
+
+        public Shift? GetShift(string uc, ShiftType type, int shiftNumber)
         {
             using var connection = DAOConfig.GetConnection();
             connection.Open();
@@ -23,7 +39,7 @@ namespace SchedulePlanner.Data
             using var reader = command.ExecuteReader();
             if (reader.Read())
             {
-                return ConvertReaderToShift(reader);
+                return ConvertReaderToShift(connection, reader);
             }
 
             return null;
@@ -46,7 +62,7 @@ namespace SchedulePlanner.Data
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    shifts.Add(ConvertReaderToShift(reader));
+                    shifts.Add(ConvertReaderToShift(connection, reader));
                 }
             }
 
@@ -67,7 +83,7 @@ namespace SchedulePlanner.Data
                 using var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    shifts.Add(ConvertReaderToShift(reader));
+                    shifts.Add(ConvertReaderToShift(connection, reader));
                 }
             }
 
@@ -98,7 +114,7 @@ namespace SchedulePlanner.Data
         public void DeleteShift(string uc, ShiftType type, int number)
         {
             using var connection = DAOConfig.GetConnection();
-            connection.Open();  
+            connection.Open();
             var query = "DELETE FROM Shift WHERE UC = @UC AND Type = @Type AND Num = @ShiftNumber";
 
             using var command = new MySqlCommand(query, connection);
@@ -116,7 +132,7 @@ namespace SchedulePlanner.Data
             var query = @"UPDATE Shift 
                               SET Type = @Type, Day = @Day, StartingHour = @StartingHour, EndingHour = @EndingHour, `Limit` = @Limit, UC = @Course, Classroom = @Classroom
                               WHERE Num = @Num";
-            
+
             using var command = new MySqlCommand(query, connection);
             command.Parameters.AddWithValue("@Num", shift.Number);
             command.Parameters.AddWithValue("@Type", shift.Type.ToString());
@@ -128,6 +144,62 @@ namespace SchedulePlanner.Data
             command.Parameters.AddWithValue("@Classroom", shift.ClassroomNumber);
 
             command.ExecuteNonQuery();
+        }
+
+        public void EnrollStudentOnShift(string studentId, string uc, ShiftType type, int number)
+        {
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"INSERT INTO Enrollment (Student, ShiftNum, ShiftType, ShiftUC)
+                          VALUES (@Student, @ShiftNum, @ShiftType, @ShiftUC)";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Student", studentId);
+            command.Parameters.AddWithValue("@ShiftNum", number);
+            command.Parameters.AddWithValue("@ShiftType", type.ToString());
+            command.Parameters.AddWithValue("@ShiftUC", uc);
+
+            command.ExecuteNonQuery();
+        }
+
+        public void UnrollStudentFromShift(string studentId, string uc, ShiftType type, int number)
+        {
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"DELETE FROM Enrollment
+                          WHERE Student = @Student AND ShiftNum = @ShiftNum AND ShiftType = @ShiftType AND ShiftUC = @ShiftUC";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Student", studentId);
+            command.Parameters.AddWithValue("@ShiftNum", number);
+            command.Parameters.AddWithValue("@ShiftType", type.ToString());
+            command.Parameters.AddWithValue("@ShiftUC", uc);
+
+            command.ExecuteNonQuery();
+        }
+
+        public List<string> GetStudentsFromShiftByNumber(string uc, ShiftType type, int number)
+        {
+            var students = new List<string>();
+
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"SELECT Student
+                          FROM Enrollment
+                          WHERE ShiftNum = @ShiftNum AND ShiftType = @ShiftType AND ShiftUC = @ShiftUC";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@ShiftNum", number);
+            command.Parameters.AddWithValue("@ShiftType", type.ToString());
+            command.Parameters.AddWithValue("@ShiftUC", uc);
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                students.Add(reader["Student"].ToString()!);
+            }
+
+            return students;
         }
 
         public bool ShiftExists(string uc, ShiftType type, int number)
@@ -156,7 +228,7 @@ namespace SchedulePlanner.Data
             return count > 0;
         }
 
-        private Shift ConvertReaderToShift(MySqlDataReader reader)
+        private Shift ConvertReaderToShift(MySqlConnection connection, MySqlDataReader reader)
         {
             var shiftNum = Convert.ToInt32(reader["Num"]);
             var shiftType = Enum.Parse<Shift.ShiftType>(reader["Type"].ToString()!);
@@ -169,9 +241,25 @@ namespace SchedulePlanner.Data
             var capacity = Convert.ToInt32(reader["Limit"]);
             var classroomNumber = reader["Classroom"].ToString()!;
 
-            // shift.LoadStudents(); // Load students into the shift
+            var studentsIds = new List<string>();
 
-            return new Shift(shiftNum, shiftType, day, startingHour, endingHour, capacity, ucCode, classroomNumber);
+            connection.Open();
+            var query = @"SELECT Student
+                      FROM Enrollment
+                      WHERE ShiftNum = @ShiftNum AND ShiftType = @ShiftType AND ShiftUC = @ShiftUC";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@ShiftNum", shiftNum);
+            command.Parameters.AddWithValue("@ShiftType", shiftType.ToString());
+            command.Parameters.AddWithValue("@ShiftUC", ucCode);
+
+            using var enrollmentReader = command.ExecuteReader();
+            while (enrollmentReader.Read())
+            {
+                studentsIds.Add(enrollmentReader["Student"].ToString()!);
+            }
+
+            return new Shift(shiftNum, shiftType, day, startingHour, endingHour, capacity, ucCode, classroomNumber, studentsIds);
         }
 
     }

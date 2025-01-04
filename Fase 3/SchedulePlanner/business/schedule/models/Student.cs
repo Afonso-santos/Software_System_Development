@@ -1,3 +1,5 @@
+using SchedulePlanner.Data;
+
 namespace SchedulePlanner.business.schedule.models;
 
 public class Student(string number, string name, string email, bool statute, int year, string course, float partialMean)
@@ -9,6 +11,11 @@ public class Student(string number, string name, string email, bool statute, int
     public int Year { get; } = year;
     public string Course { get; } = course;
     public float PartialMean { get; } = partialMean;
+
+
+    private readonly StudentDAO _student_DAO = StudentDAO.GetInstance();
+
+    public List<Shift> GetStudentEnrollments() => _student_DAO.GetStudentEnrollments(Number);
 
     public override string ToString() => $"{Number} - {Name}";
 

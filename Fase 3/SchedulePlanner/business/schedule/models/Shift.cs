@@ -1,6 +1,8 @@
+using SchedulePlanner.Data;
+
 namespace SchedulePlanner.business.schedule.models
 {
-    public class Shift(int number, Shift.ShiftType type, string day, TimeSpan startingHour, TimeSpan endingHour, int capacity, string ucCode, string classroomNumber)
+    public class Shift(int number, Shift.ShiftType type, string day, TimeSpan startingHour, TimeSpan endingHour, int capacity, string ucCode, string classroomNumber, List<string>? studentKeys = null)
     {
         public int Number { get; } = number;
         public ShiftType Type { get; } = type;
@@ -11,7 +13,7 @@ namespace SchedulePlanner.business.schedule.models
         public int Capacity { get; } = capacity;
         public string ClassroomNumber { get; } = classroomNumber;
 
-        public List<string> StudentKeys { get; } = new List<string>();
+        public List<string> StudentKeys { get; } = studentKeys ?? new List<string>();
 
         public int NumberOfStudents => StudentKeys.Count;
         public bool IsFull => NumberOfStudents >= Capacity;
@@ -26,8 +28,10 @@ namespace SchedulePlanner.business.schedule.models
             PL  // Practical-Laboratory
         }
 
+        private readonly ShiftDAO _shifts_DAO = ShiftDAO.GetInstance();
+
         // Add student to the shift
-        public void EnrollStudent(string studentKey)
+        public void EnrollStudentOnShift(string studentKey)
         {
             if (IsFull)
             {
@@ -39,11 +43,11 @@ namespace SchedulePlanner.business.schedule.models
             }
 
             StudentKeys.Add(studentKey);
-            // enroll the student on the DAO
+            _shifts_DAO.EnrollStudentOnShift(studentKey, UCCode, Type, Number);
         }
 
         // Remove student from the shift
-        public void RemoveStudent(string studentKey)
+        public void UnrollStudentFromShift(string studentKey)
         {
             if (!StudentKeys.Contains(studentKey))
             {
@@ -51,7 +55,7 @@ namespace SchedulePlanner.business.schedule.models
             }
 
             StudentKeys.Remove(studentKey);
-            // unroll the student on the DAO
+            _shifts_DAO.UnrollStudentFromShift(studentKey, UCCode, Type, Number);
         }
 
         public override string ToString() =>

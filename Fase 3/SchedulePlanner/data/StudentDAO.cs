@@ -5,6 +5,24 @@ namespace SchedulePlanner.Data
 {
     public class StudentDAO
     {
+        private static StudentDAO? _instance;
+
+        // Private constructor to prevent instantiation
+        private StudentDAO() { }
+
+        /// <summary>
+        /// Public method to retrieve the single instance of UserDAO.
+        /// </summary>
+        /// <returns>The singleton instance of UserDAO.</returns>
+
+        public static StudentDAO GetInstance()
+        {
+            _instance ??= new StudentDAO();
+            return _instance;
+        }
+
+        private readonly ShiftDAO _shifts_DAO = ShiftDAO.GetInstance();
+
         /// <summary>
         /// Inserts a new student into the database.
         /// </summary>
@@ -177,6 +195,38 @@ namespace SchedulePlanner.Data
                 transaction.Rollback();
                 throw;
             }
+        }
+
+        public List<Shift> GetStudentEnrollments(string studentNumber)
+        {
+            var shifts = new List<Shift>();
+
+            using (var connection = DAOConfig.GetConnection())
+            {
+                connection.Open();
+                var query = @"SELECT ShiftNum, ShiftType, ShiftUC
+                              FROM Enrollment
+                              WHERE Student = @Student";
+
+                using var command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Student", studentNumber);
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var shiftNumber = Convert.ToInt32(reader["ShiftNum"]);
+                    var shiftType = Enum.Parse<Shift.ShiftType>(reader["ShiftType"].ToString()!);
+                    var shiftUC = reader["ShiftUC"].ToString()!;
+
+                    var shift = _shifts_DAO.GetShift(shiftUC, shiftType, shiftNumber);
+                    if (shift != null)
+                    {
+                        shifts.Add(shift);
+                    }
+                }
+            }
+
+            return shifts;
         }
 
         public bool ContainsKey(string key)

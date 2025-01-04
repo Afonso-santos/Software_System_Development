@@ -20,9 +20,9 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     public SchedulePlannerFacade()
     {
-        _students = new StudentDAO();
+        _students = StudentDAO.GetInstance();
         _classrooms = new ClassroomDAO();
-        _shifts = new ShiftDAO();
+        _shifts = ShiftDAO.GetInstance();
         _courses = CourseDAO.GetInstance();
         _ucs = new UCDAO();
     }
