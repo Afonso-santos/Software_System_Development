@@ -27,6 +27,17 @@ public interface ISchedulePlanner
     bool ImportStudentsAndUCs(string filePath);
     bool ImportShifts(string filePath);
 
+    void AddUCS(UC uc);
+
+    void RemoveUCS(string code);
+    IEnumerable<string> GetUCs();
+
+    void AddCourse(Course course);
+
+    void RemoveCourse(string code);
+
+    IEnumerable<string> GetCourses();
+
     void RemoveStudent(string studentId);
     void RemoveShift(string uc, ShiftType type, int number);
     void AddShift(Shift shift);
