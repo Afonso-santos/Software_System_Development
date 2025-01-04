@@ -250,9 +250,164 @@ public class SchedulePlannerFacade : ISchedulePlanner
     }
 
 
-    public bool ImportShifts(string filePath)
+    public bool ImportShifts(string filePath, string courseName)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var jsonData = File.ReadAllText(filePath);
+            var shiftsData = JsonConvert.DeserializeObject<List<ShiftData>>(jsonData);
+
+            if (shiftsData == null)
+            {
+                Console.WriteLine("No shift data found in the file.");
+                return false;
+            }
+
+            foreach (var shiftData in shiftsData)
+            {
+                if (shiftData == null)
+                {
+                    Console.WriteLine("Invalid shift data.");
+                    continue;
+                }
+
+                var filterId = shiftData.FilterId.ToString();
+                if (filterId.Length < 3)
+                {
+                    Console.WriteLine("Invalid shift data: FilterId is invalid.");
+                    continue;
+                }
+
+                var year = int.Parse(filterId.Substring(0, 1));
+                var semester = int.Parse(filterId.Substring(1, 1));
+                var uniqueId = int.Parse(filterId.Substring(2));
+
+                if (string.IsNullOrEmpty(shiftData.Shift))
+                {
+                    Console.WriteLine("Invalid shift data: Shift is null or empty.");
+                    continue;
+                }
+                // Parse the shift type and number
+                var shiftNumber = '0';
+                var shiftType = "";
+                try {
+                    // scrape the digits from the end of the string
+                    int i;
+                    for (i = shiftData.Shift.Length - 1; i >= 0; i--)
+                    {
+                        if (char.IsDigit(shiftData.Shift[i]))
+                        {
+                            shiftNumber = shiftData.Shift[i];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    // the remaining string is the shift type
+                    shiftType = shiftData.Shift.Substring(0, i + 1);
+                } catch (Exception ex) {
+                    Console.WriteLine($"Error parsing shift type and number: {ex.Message}");
+                    continue;
+                }
+
+                var day = GetDayOfWeek(shiftData.Day);
+                if (string.IsNullOrEmpty(shiftData.Start) || string.IsNullOrEmpty(shiftData.End))
+                {
+                    Console.WriteLine("Invalid shift data: Start time is null or empty.");
+                    continue;
+                }
+                var startHour = TimeSpan.Parse(shiftData.Start);
+                var endHour = TimeSpan.Parse(shiftData.End);
+                var UCCode = shiftData.Id;
+                var UCName = shiftData.Title;
+                var building = shiftData.Building;
+                var room = shiftData.Room;
+                var capacity = 0;
+
+                if (string.IsNullOrEmpty(room))
+                {
+                    Console.WriteLine("Invalid shift data: Room is null or empty.");
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(building))
+                {
+                    Console.WriteLine("Invalid shift data: Building is null or empty.");
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(UCCode))
+                {
+                    Console.WriteLine("Invalid shift data: UC code is null or empty.");
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(UCName))
+                {
+                    Console.WriteLine("Invalid shift data: UC name is null or empty.");
+                    continue;
+                }
+
+                if (shiftData.Theoretical)
+                {
+                    capacity = 100;
+                }
+                else
+                {
+                    capacity = 50;
+                }
+
+                // Prepend the building to the room string
+                room = building + room;
+                // instanciate the classroom
+                var classroom = new Classroom(room, capacity.ToString());
+                if (!_classrooms.ClassroomExists(room))
+                {
+                    // Add the Classroom to the database if it doesn't exist
+                    _classrooms.InsertClassroom(classroom);
+                }
+
+                // Check if the UC exists if not create it
+                if (!_ucs.UCExists(UCCode))
+                {
+                    var uc = new UC(UCCode, UCName, courseName, year, semester);
+                    _ucs.InsertUC(uc);
+                }
+
+                // convert the shift type to enum
+                var shiftTypeEnum = shiftType switch
+                {
+                    "T" => ShiftType.T,
+                    "TP" => ShiftType.TP,
+                    "PL" => ShiftType.PL,
+                    _ => ShiftType.T
+                };
+
+                // instanciate the shift
+                var shift = new Shift(shiftNumber, shiftTypeEnum, day, startHour, endHour, capacity, UCCode, room);
+                if (!_shifts.ShiftExists(UCCode, shift.Type, shift.Number))
+                {
+                    _shifts.InsertShift(shift);
+                }
+                else
+                {
+                    _shifts.UpdateShift(shift);
+                }
+
+                // System.Console.WriteLine($"Id: {shiftData.Id}");
+                // System.Console.WriteLine($"Shift - number: {shiftNumber} type: {shiftType} day: {day} start: {startHour} end: {endHour}");
+                // System.Console.WriteLine($"Classroom - room: {room} capacity: {capacity}");
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error importing shifts: {ex.Message}");
+            return false;
+        }
     }
 
 
@@ -309,13 +464,14 @@ public class SchedulePlannerFacade : ISchedulePlanner
     {
         _courses.DeleteCourse(courseCode);
     }
+
     public IEnumerable<string> GetCourses()
     {
         return _courses.GetAllCourses().Select(course => course.ToString());
     }
 
+    public bool CourseExists(string courseCode)
+    {
+        return _courses.CourseExists(courseCode);
+    }
 }
-
-
-
-

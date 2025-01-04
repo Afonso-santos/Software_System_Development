@@ -34,6 +34,7 @@ public class TextUI
             "Remove Student from Shift",
             "List Students in Shift",
             "Import Students",
+            "Import Schedules"
         });
 
         // menu.SetPreCondition(3, () => this.model.HasClassrooms());
@@ -49,6 +50,7 @@ public class TextUI
         menu.SetHandler(7, () => RemoveStudentFromShift());
         menu.SetHandler(8, () => ListStudentsInShift());
         menu.SetHandler(9, () => importStudentFromFile());
+        menu.SetHandler(10, () => ImportSchedules());
 
         menu.Run(isMainMenu: true);
     }
@@ -476,6 +478,44 @@ public class TextUI
         }
     }
 
+    private void ImportSchedules()
+    {
+        try
+        {
+            // Get the course name
+            Console.Write("Course name: ");
+            string? courseName = Console.ReadLine();
+            if (courseName == null)
+            {
+                Console.WriteLine("Course name cannot be empty.");
+                return;
+            }
+
+            // Create the course if it does not exist
+            if (!this.model.CourseExists(courseName))
+            {
+                this.model.AddCourse(new Course(courseName));
+            }
+
+            Console.Write("File path: ");
+            string? filePath = Console.ReadLine();
+            if (filePath == null)
+            {
+                Console.WriteLine("File path cannot be empty.");
+                return;
+            }
+
+            if (this.model.ImportShifts(filePath, courseName))
+            {
+                Console.WriteLine("Schedules imported successfully.");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error importing schedules: " + e.Message);
+        }
+    }
+
     private void importStudentFromFile()
     {
             Console.WriteLine("Path from Student File: ");
@@ -560,7 +600,6 @@ public class TextUI
 
                 this.model.AddUCS(new UC(ucsCode, ucsName, ucsCourseCode, ucsYear, ucsSemester, ucsPreference));
                 Console.WriteLine("UCS added successfully.");
-
             }
             else
             {
@@ -680,5 +719,4 @@ public class TextUI
             Console.WriteLine(e.Message);
         }
     }
-
 }
