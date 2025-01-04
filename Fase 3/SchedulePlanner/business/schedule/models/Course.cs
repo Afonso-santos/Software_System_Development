@@ -1,17 +1,10 @@
 namespace SchedulePlanner.business.schedule.models
 {
-    public class Course
+    public class Course(string name)
     {
-        public string Code { get; }
-        public string Name { get; }
+        public string Name { get; } = name;
 
-        public Course(string code, string name)
-        {
-            Code = code;
-            Name = name;
-        }
-
-        public override string ToString() => $"{Code} - {Name}";
+        public override string ToString() => $"{Name} - {Name}";
 
         public override bool Equals(object? obj)
         {
@@ -20,13 +13,13 @@ namespace SchedulePlanner.business.schedule.models
                 return false;
             }
             var course = (Course)obj;
-            return Code == course.Code;
+            return Name == course.Name;
         }
 
-        public override int GetHashCode() => Code.GetHashCode();
+        public override int GetHashCode() => Name.GetHashCode();
 
-        public static bool operator ==(Course a, Course b) => a?.Code == b?.Code;
+        public static bool operator ==(Course a, Course b) => a?.Name == b?.Name;
 
-        public static bool operator !=(Course a, Course b) => a?.Code != b?.Code;
+        public static bool operator !=(Course a, Course b) => a?.Name != b?.Name;
     }
 }

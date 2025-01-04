@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using SchedulePlanner.Data;
 using SchedulePlanner.business.schedule.models;
 
 namespace SchedulePlanner.Data
@@ -11,28 +8,24 @@ namespace SchedulePlanner.Data
         // Retrieve a UC by its code
         public UC? GetUCByCode(string code)
         {
-            using (var connection = DAOConfig.GetConnection())
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "SELECT * FROM UC WHERE Code = @Code";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Code", code);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
             {
-                connection.Open();
-                var query = "SELECT * FROM UC WHERE Code = @Code";
-
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", code);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new UC(
-                                reader["Code"].ToString()!,
-                                reader["Name"].ToString()!,
-                                reader["Course"].ToString()!,
-                                reader["Preference"]?.ToString()
-                            );
-                        }
-                    }
-                }
+                return new UC(
+                    reader["Code"].ToString()!,
+                    reader["Name"].ToString()!,
+                    reader["Course"].ToString()!,
+                    Convert.ToInt32(reader["CourseYear"]),
+                    Convert.ToInt32(reader["Semester"]),
+                    reader["Preference"]?.ToString()
+                );
             }
 
             return null; // No UC found
@@ -47,18 +40,18 @@ namespace SchedulePlanner.Data
                 connection.Open();
                 var query = "SELECT * FROM UC";
 
-                using (var command = new MySqlCommand(query, connection))
-                using (var reader = command.ExecuteReader())
+                using var command = new MySqlCommand(query, connection);
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        ucs.Add(new UC(
-                            reader["Code"].ToString()!,
-                            reader["Name"].ToString()!,
-                            reader["Course"].ToString()!,
-                            reader["Preference"]?.ToString()
-                        ));
-                    }
+                    ucs.Add(new UC(
+                        reader["Code"].ToString()!,
+                        reader["Name"].ToString()!,
+                        reader["Course"].ToString()!,
+                        Convert.ToInt32(reader["CourseYear"]),
+                        Convert.ToInt32(reader["Semester"]),
+                        reader["Preference"]?.ToString()
+                    ));
                 }
             }
 
@@ -66,78 +59,66 @@ namespace SchedulePlanner.Data
         }
 
         // Add a new UC
-        public void AddUC(UC uc)
+        public void InsertUC(UC uc)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = @"INSERT INTO UC (Code, Name, Course, Preference) 
-                              VALUES (@Code, @Name, @Course, @Preference)";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"INSERT INTO UC (Code, Name, Course, Preference, CourseYear, Semester) 
+                              VALUES (@Code, @Name, @Course, @Preference, @CourseYear, @Semester)";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", uc.Code);
-                    command.Parameters.AddWithValue("@Name", uc.Name);
-                    command.Parameters.AddWithValue("@Course", uc.CourseCode);
-                    command.Parameters.AddWithValue("@Preference", uc.Preference);
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Code", uc.Code);
+            command.Parameters.AddWithValue("@Name", uc.Name);
+            command.Parameters.AddWithValue("@Course", uc.CourseCode);
+            command.Parameters.AddWithValue("@Preference", uc.Preference);
+            command.Parameters.AddWithValue("@CourseYear", uc.CourseYear);
+            command.Parameters.AddWithValue("@Semester", uc.Semester);
 
-                    command.ExecuteNonQuery();
-                }
-            }
+            command.ExecuteNonQuery();
         }
 
         // Update an existing UC
         public void UpdateUC(UC uc)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = @"UPDATE UC 
-                              SET Name = @Name, Course = @Course, Preference = @Preference 
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"UPDATE UC 
+                              SET Name = @Name, Course = @Course, Preference = @Preference, CourseYear = @CourseYear, Semester = @Semester
                               WHERE Code = @Code";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", uc.Code);
-                    command.Parameters.AddWithValue("@Name", uc.Name);
-                    command.Parameters.AddWithValue("@Course", uc.CourseCode);
-                    command.Parameters.AddWithValue("@Preference", uc.Preference);
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Code", uc.Code);
+            command.Parameters.AddWithValue("@Name", uc.Name);
+            command.Parameters.AddWithValue("@Course", uc.CourseCode);
+            command.Parameters.AddWithValue("@Preference", uc.Preference);
+            command.Parameters.AddWithValue("@CourseYear", uc.CourseYear);
+            command.Parameters.AddWithValue("@Semester", uc.Semester);
 
-                    command.ExecuteNonQuery();
-                }
-            }
+            command.ExecuteNonQuery();
         }
 
         // Delete a UC by its code
         public void DeleteUC(string code)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = "DELETE FROM UC WHERE Code = @Code";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "DELETE FROM UC WHERE Code = @Code";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", code);
-                    command.ExecuteNonQuery();
-                }
-            }
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Code", code);
+            command.ExecuteNonQuery();
         }
 
         // Check if a UC exists by its code
         public bool UCExists(string code)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = "SELECT COUNT(*) FROM UC WHERE Code = @Code";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "SELECT COUNT(*) FROM UC WHERE Code = @Code";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", code);
-                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
-                }
-            }
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Code", code);
+            return Convert.ToInt32(command.ExecuteScalar()) > 0;
         }
     }
 }

@@ -20,24 +20,25 @@ CREATE TABLE IF NOT EXISTS UC (
     Name VARCHAR(100) NOT NULL,
     Course VARCHAR(100) NOT NULL,
     Preference VARCHAR(200),
-    COURSE_YEAR INT NOT NULL,
-    SEMESTER INT NOT NULL,
+    CourseYear INT NOT NULL,
+    Semester INT NOT NULL,
     PRIMARY KEY (Code),
     FOREIGN KEY (Course) REFERENCES Course(Name)
 );
 
 CREATE TABLE IF NOT EXISTS Classroom (
-    Num VARCHAR(50) NOT NULL,
+    Number VARCHAR(50) NOT NULL,
     Capacity INT NOT NULL,
-    PRIMARY KEY (Num)
+    PRIMARY KEY (Number)
 );
 
 CREATE TABLE IF NOT EXISTS Shift (
     Num INT NOT NULL,
-    Type ENUM('T', 'TP', 'P') NOT NULL,
+    Type ENUM('T', 'TP', 'PL') NOT NULL,
     UC VARCHAR(50) NOT NULL,
     Day ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
-    Hour TIME NOT NULL,
+    StartingHour TIME NOT NULL,
+    EndingHour TIME NOT NULL,
     `Limit` INT,
     Classroom VARCHAR(50) NOT NULL,
 
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Shift (
     UNIQUE KEY (Num, Type, UC),
 
     FOREIGN KEY (UC) REFERENCES UC(Code),
-    FOREIGN KEY (Classroom) REFERENCES Classroom(Num)
+    FOREIGN KEY (Classroom) REFERENCES Classroom(Number)
 );
 
 CREATE TABLE IF NOT EXISTS Student (
@@ -56,10 +57,9 @@ CREATE TABLE IF NOT EXISTS Student (
     Year INT NOT NULL,
     Course VARCHAR(50) NOT NULL,
     PartialMean FLOAT NOT NULL,
-    Username VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (Num),
-    FOREIGN KEY (Username) REFERENCES User(Username),
+    FOREIGN KEY (Num) REFERENCES User(Username),
     FOREIGN KEY (Course) REFERENCES Course(Name)
 );
 

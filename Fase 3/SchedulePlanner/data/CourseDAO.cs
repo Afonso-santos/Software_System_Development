@@ -1,36 +1,42 @@
-using System;
-using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using SchedulePlanner.Data;
 using SchedulePlanner.business.schedule.models;
 
 namespace SchedulePlanner.Data
 {
     public class CourseDAO
     {
-        // Retrieve a course by its code
-        public Course? GetCourseByCode(string code)
+        private static CourseDAO? _instance;
+
+        // Private constructor to prevent instantiation
+        private CourseDAO() { }
+
+        /// <summary>
+        /// Public method to retrieve the single instance of UserDAO.
+        /// </summary>
+        /// <returns>The singleton instance of UserDAO.</returns>
+
+        public static CourseDAO GetInstance()
         {
-            using (var connection = DAOConfig.GetConnection())
+            _instance ??= new CourseDAO();
+            return _instance;
+        }
+
+        // Retrieve a course by its name
+        public Course? GetCourseByName(string name)
+        {
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "SELECT * FROM Course WHERE Name = @Name";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", name);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
             {
-                connection.Open();
-                var query = "SELECT * FROM Course WHERE Code = @Code";
-
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", code);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Course(
-                                reader["Code"].ToString()!,
-                                reader["Name"].ToString()!
-                            );
-                        }
-                    }
-                }
+                return new Course(
+                    reader["Name"].ToString()!
+                );
             }
 
             return null; // No course found
@@ -45,16 +51,13 @@ namespace SchedulePlanner.Data
                 connection.Open();
                 var query = "SELECT * FROM Course";
 
-                using (var command = new MySqlCommand(query, connection))
-                using (var reader = command.ExecuteReader())
+                using var command = new MySqlCommand(query, connection);
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        courses.Add(new Course(
-                            reader["Code"].ToString()!,
-                            reader["Name"].ToString()!
-                        ));
-                    }
+                    courses.Add(new Course(
+                        reader["Name"].ToString()!
+                    ));
                 }
             }
 
@@ -62,74 +65,53 @@ namespace SchedulePlanner.Data
         }
 
         // Add a new course
-        public void AddCourse(Course course)
+        public void InsertCourse(Course course)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = @"INSERT INTO Course (Code, Name) 
-                              VALUES (@Code, @Name)";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"INSERT INTO Course (Name) VALUES (@Name)";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", course.Code);
-                    command.Parameters.AddWithValue("@Name", course.Name);
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", course.Name);
 
-                    command.ExecuteNonQuery();
-                }
-            }
+            command.ExecuteNonQuery();
         }
 
         // Update an existing course
         public void UpdateCourse(Course course)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = @"UPDATE Course 
-                              SET Name = @Name 
-                              WHERE Code = @Code";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = @"UPDATE Course  SET Name = @Name WHERE Name = @Name";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", course.Code);
-                    command.Parameters.AddWithValue("@Name", course.Name);
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", course.Name);
 
-                    command.ExecuteNonQuery();
-                }
-            }
+            command.ExecuteNonQuery();
         }
 
-        // Delete a course by its code
-        public void DeleteCourse(string code)
+        // Delete a course by its name
+        public void DeleteCourse(string name)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = "DELETE FROM Course WHERE Code = @Code";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "DELETE FROM Course WHERE Name = @Name";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", code);
-                    command.ExecuteNonQuery();
-                }
-            }
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", name);
+            command.ExecuteNonQuery();
         }
 
-        // Check if a course exists by its code
-        public bool CourseExists(string code)
+        // Check if a course exists by its name
+        public bool CourseExists(string name)
         {
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = "SELECT COUNT(*) FROM Course WHERE Code = @Code";
+            using var connection = DAOConfig.GetConnection();
+            connection.Open();
+            var query = "SELECT COUNT(*) FROM Course WHERE Name = @Name";
 
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Code", code);
-                    return Convert.ToInt32(command.ExecuteScalar()) > 0;
-                }
-            }
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Name", name);
+            return Convert.ToInt32(command.ExecuteScalar()) > 0;
         }
     }
 }

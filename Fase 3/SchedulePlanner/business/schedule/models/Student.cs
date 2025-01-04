@@ -1,6 +1,6 @@
 namespace SchedulePlanner.business.schedule.models;
 
-public class Student(string number, string name, string email, bool statute, int year, string course, float partialMean, string username)
+public class Student(string number, string name, string email, bool statute, int year, string course, float partialMean)
 {
     public string Number { get; } = number;
     public string Name { get; } = name;
@@ -9,7 +9,6 @@ public class Student(string number, string name, string email, bool statute, int
     public int Year { get; } = year;
     public string Course { get; } = course;
     public float PartialMean { get; } = partialMean;
-    public string Username { get; } = username;
 
     public override string ToString() => $"{Number} - {Name}";
 

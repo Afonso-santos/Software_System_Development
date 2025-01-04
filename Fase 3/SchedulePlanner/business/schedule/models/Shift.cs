@@ -1,21 +1,17 @@
-using System;
-using System.Collections.Generic;
-using SchedulePlanner.Data;
-
 namespace SchedulePlanner.business.schedule.models
 {
-    public class Shift
+    public class Shift(int number, Shift.ShiftType type, string day, TimeSpan startingHour, TimeSpan endingHour, int capacity, string ucCode, string classroomNumber)
     {
-        public int Number { get; } // Changed from string to int
-        public Classroom? Classroom { get; set; }
-        public List<string> StudentKeys { get; }
-        private readonly StudentDAO studentDAO;
+        public int Number { get; } = number;
+        public ShiftType Type { get; } = type;
+        public string UCCode { get; } = ucCode;
+        public string Day { get; } = day;
+        public TimeSpan StartingHour { get; } = startingHour;
+        public TimeSpan EndingHour { get; } = endingHour;
+        public int Capacity { get; } = capacity;
+        public string ClassroomNumber { get; } = classroomNumber;
 
-        public ShiftType Type { get; set; }
-        public int Capacity { get; set; }
-        public string Day { get; set; }
-        public TimeSpan Hour { get; set; }
-        public string CourseCode { get; }
+        public List<string> StudentKeys { get; } = new List<string>();
 
         public int NumberOfStudents => StudentKeys.Count;
         public bool IsFull => NumberOfStudents >= Capacity;
@@ -30,29 +26,8 @@ namespace SchedulePlanner.business.schedule.models
             PL  // Practical-Laboratory
         }
 
-        // Constructor: Number is now int
-        public Shift(int number, ShiftType type, string day, TimeSpan hour, int capacity, string courseCode, Classroom? classroom)
-        {
-            Number = number;
-            Type = type;
-            Day = day;
-            Hour = hour;
-            Capacity = capacity;
-            CourseCode = courseCode;
-            Classroom = classroom;
-            studentDAO = new StudentDAO();
-            StudentKeys = new List<string>();
-        }
-
-        // Loads student keys for the shift
-        public void LoadStudents()
-        {
-            StudentKeys.Clear();
-            StudentKeys.AddRange(studentDAO.GetStudentKeysForShift(Number));  
-        }
-
         // Add student to the shift
-        public void AddStudent(string studentKey)
+        public void EnrollStudent(string studentKey)
         {
             if (IsFull)
             {
@@ -64,7 +39,7 @@ namespace SchedulePlanner.business.schedule.models
             }
 
             StudentKeys.Add(studentKey);
-            studentDAO.EnrollStudentInShift(studentKey, CourseCode,Number); 
+            // enroll the student on the DAO
         }
 
         // Remove student from the shift
@@ -76,11 +51,11 @@ namespace SchedulePlanner.business.schedule.models
             }
 
             StudentKeys.Remove(studentKey);
-            studentDAO.UnenrollStudentFromShift(studentKey, CourseCode, Number);  
+            // unroll the student on the DAO
         }
 
         public override string ToString() =>
-            $"Shift {Number}: {Type} on {Day} at {Hour} in Classroom {Classroom?.Number ?? "None"} (Capacity: {Capacity}, Students: {NumberOfStudents})";
+            $"Shift {Number}: {Type} on {Day} from {StartingHour} to {EndingHour} in Classroom {ClassroomNumber} with {NumberOfStudents}/{Capacity} students. UC: {UCCode}";
 
         public override bool Equals(object? obj)
         {

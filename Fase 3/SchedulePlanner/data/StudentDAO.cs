@@ -17,27 +17,21 @@ namespace SchedulePlanner.Data
 
             try
             {
-                var courseQuery = @"INSERT IGNORE INTO Course 
-                                          (Name) 
-                                          VALUES 
-                                          (@CourseName)";
-
-                using (var userCommand = new MySqlCommand(courseQuery, connection, transaction))
+                var courseDAO = CourseDAO.GetInstance();
+                if (!courseDAO.CourseExists(student.Course))
                 {
-                    userCommand.Parameters.AddWithValue("@CourseCode", student.Course);
-                    userCommand.Parameters.AddWithValue("@CourseName", student.Course);
-                    userCommand.ExecuteNonQuery();
+                    var course = new Course(student.Course);
+                    courseDAO.InsertCourse(course);
                 }
 
                 var userDAO = UserDAO.GetInstance();
-                var user = new User(student.Username, student.Username, admin: false);
-
+                var user = new User(student.Number, student.Number, admin: false);
                 userDAO.InsertUser(user);
 
                 var studentQuery = @"INSERT INTO Student 
-                                             (Num, Name, Email, Statute, Year, Course, PartialMean, Username) 
+                                             (Num, Name, Email, Statute, Year, Course, PartialMean) 
                                              VALUES 
-                                             (@Num, @Name, @Email, @Statute, @Year, @Course, @PartialMean, @Username)";
+                                             (@Num, @Name, @Email, @Statute, @Year, @Course, @PartialMean)";
 
                 using (var studentCommand = new MySqlCommand(studentQuery, connection, transaction))
                 {
@@ -48,7 +42,6 @@ namespace SchedulePlanner.Data
                     studentCommand.Parameters.AddWithValue("@Year", student.Year);
                     studentCommand.Parameters.AddWithValue("@Course", student.Course);
                     studentCommand.Parameters.AddWithValue("@PartialMean", student.PartialMean);
-                    studentCommand.Parameters.AddWithValue("@Username", student.Username);
                     studentCommand.ExecuteNonQuery();
                 }
 
@@ -85,8 +78,7 @@ namespace SchedulePlanner.Data
                         Convert.ToBoolean(reader["Statute"]),
                         Convert.ToInt32(reader["Year"]),
                         reader["Course"].ToString()!,
-                        Convert.ToSingle(reader["PartialMean"]),
-                        reader["Username"].ToString()!
+                        Convert.ToSingle(reader["PartialMean"])
                     );
                     students.Add(student);
                 }
@@ -119,8 +111,7 @@ namespace SchedulePlanner.Data
                     Convert.ToBoolean(reader["Statute"]),
                     Convert.ToInt32(reader["Year"]),
                     reader["Course"].ToString()!,
-                    Convert.ToSingle(reader["PartialMean"]),
-                    reader["Username"].ToString()!
+                    Convert.ToSingle(reader["PartialMean"])
                 );
             }
 
@@ -137,8 +128,8 @@ namespace SchedulePlanner.Data
             connection.Open();
             var query = @"UPDATE Student 
                               SET Name = @Name, Email = @Email, Statute = @Statute, 
-                                  Year = @Year, Semester = @Semester, Course = @Course, 
-                                  PartialMean = @PartialMean, Username = @Username 
+                                  Year = @Year, Course = @Course, 
+                                  PartialMean = @PartialMean 
                               WHERE Num = @Num";
 
             using var command = new MySqlCommand(query, connection);
@@ -149,7 +140,6 @@ namespace SchedulePlanner.Data
             command.Parameters.AddWithValue("@Year", student.Year);
             command.Parameters.AddWithValue("@Course", student.Course);
             command.Parameters.AddWithValue("@PartialMean", student.PartialMean);
-            command.Parameters.AddWithValue("@Username", student.Username);
 
             command.ExecuteNonQuery();
         }
@@ -202,74 +192,6 @@ namespace SchedulePlanner.Data
             {
                 return reader.Read();
             }
-        }
-
-        /// <summary>
-        /// Enrolls a student in a shift.
-        /// </summary>
-        /// <param name="studentNumber">The student's unique number.</param>
-        /// <param name="shiftNumber">The shift number the student is being enrolled in.</param>
-        public List<string> GetStudentKeysForShift(int shiftNumber)
-        {
-            var studentKeys = new List<string>();
-
-            using (var connection = DAOConfig.GetConnection())
-            {
-                connection.Open();
-                var query = @"
-                    SELECT Student
-                    FROM Enrollment
-                    WHERE Shift = @ShiftNum";
-
-                using var command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@ShiftNum", shiftNumber);
-
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    studentKeys.Add(reader["Student"].ToString()!);
-                }
-            }
-
-            return studentKeys;
-        }
-
-        /// <summary>
-        /// Enrolls a student in a shift by adding an entry to the Enrollment table.
-        /// </summary>
-        public void EnrollStudentInShift(string studentKey, string courseCode, int shiftNumber)
-        {
-            using var connection = DAOConfig.GetConnection();
-            connection.Open();
-            var query = @"
-                    INSERT INTO Enrollment (Student, UC, Shift)
-                    VALUES (@Student, @CourseCode, @ShiftNum)";
-
-            using var command = new MySqlCommand(query, connection);
-            command.Parameters.AddWithValue("@Student", studentKey);
-            command.Parameters.AddWithValue("@CourseCode", courseCode);
-            command.Parameters.AddWithValue("@ShiftNum", shiftNumber);
-
-            command.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Unenrolls a student from a shift by removing the entry from the Enrollment table.
-        /// </summary>
-        public void UnenrollStudentFromShift(string studentKey, string courseCode, int shiftNumber)
-        {
-            using var connection = DAOConfig.GetConnection();
-            connection.Open();
-            var query = @"
-                    DELETE FROM Enrollment
-                    WHERE Student = @Student AND UC = @CourseCode AND Shift = @ShiftNum";
-
-            using var command = new MySqlCommand(query, connection);
-            command.Parameters.AddWithValue("@Student", studentKey);
-            command.Parameters.AddWithValue("@CourseCode", courseCode);
-            command.Parameters.AddWithValue("@ShiftNum", shiftNumber);
-
-            command.ExecuteNonQuery();
         }
     }
 }
