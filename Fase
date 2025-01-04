@@ -1,0 +1,4 @@
+if (shift is null)
+{
+    // Handle the case where shift is null
+}

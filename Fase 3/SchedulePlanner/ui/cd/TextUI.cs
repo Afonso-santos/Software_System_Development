@@ -35,6 +35,7 @@ public class TextUI
             "Remove Student from Shift",
             "List Students in Shift",
             "Import Students",
+            "Import Schedules",
             "Enrollement Operations"
         });
 
@@ -48,12 +49,12 @@ public class TextUI
         menu.SetHandler(4, () => ManageShifts());
         menu.SetHandler(5, () => ManageClassrooms());
         menu.SetHandler(6, () => AddStudentToShift());
-        menu.SetHandler(7, () => ManageEnrollement());
         menu.SetHandler(8, () => AllocateAllStudents());
         menu.SetHandler(9, () => RemoveStudentFromShift());
         menu.SetHandler(10, () => ListStudentsInShift());
         menu.SetHandler(11, () => importStudentFromFile());
         menu.SetHandler(12, () => ImportSchedules());
+        menu.SetHandler(7, () => ManageEnrollement());
 
         menu.Run(isMainMenu: true);
     }
@@ -533,23 +534,23 @@ public class TextUI
 
     private void importStudentFromFile()
     {
-            Console.WriteLine("Path from Student File: ");
-            string? shiftNumber = Console.ReadLine();
-            if (shiftNumber == null)
-            {
-                Console.WriteLine("Path from student file cannot be empty.");
-                return;
-            }
+        Console.WriteLine("Path from Student File: ");
+        string? shiftNumber = Console.ReadLine();
+        if (shiftNumber == null)
+        {
+            Console.WriteLine("Path from student file cannot be empty.");
+            return;
+        }
 
-            bool imported = this.model.ImportStudent(shiftNumber);
-            if (imported)
-            {
-                Console.WriteLine("Students imported successfully.");
-            }
-            else
-            {
-                Console.WriteLine("No student imported. Please check the file and try again.");
-            }
+        bool imported = this.model.ImportStudent(shiftNumber);
+        if (imported)
+        {
+            Console.WriteLine("Students imported successfully.");
+        }
+        else
+        {
+            Console.WriteLine("No student imported. Please check the file and try again.");
+        }
     }
 
     private void ManageUCS()
@@ -788,14 +789,16 @@ public class TextUI
             }
 
             var shift = this.model.GetShift(ucCode, type, shiftNumber);
-            if (shift == null)
+            if (shift is not null)
+            {
+                shift.EnrollStudentOnShift(studentNumber);
+                Console.WriteLine("Student enrolled successfully.");
+            }
+            else
             {
                 Console.WriteLine("Shift not found.");
                 return;
             }
-
-            shift.EnrollStudentOnShift(studentNumber);
-            Console.WriteLine("Student enrolled successfully.");
         }
         catch (Exception e)
         {
@@ -840,14 +843,18 @@ public class TextUI
             }
 
             var shift = this.model.GetShift(ucCode, type, shiftNumber);
-            if (shift == null)
+            if (shift is not null)
+            {
+                shift.UnrollStudentFromShift(studentNumber);
+                Console.WriteLine("Student unenrolled successfully.");
+            }
+            else
             {
                 Console.WriteLine("Shift not found.");
                 return;
             }
 
-            shift.UnrollStudentFromShift(studentNumber);
-            Console.WriteLine("Student unenrolled successfully.");
+
         }
         catch (Exception e)
         {
