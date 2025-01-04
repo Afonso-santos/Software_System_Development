@@ -249,16 +249,16 @@ subsistemas envolvidos.
     \label{fig:5-1-arquitetura_geral}
 \end{minipage}
 
-\section{\textcolor{red}{Subsistema Autenticação (\textit{Authentication})}}
+\section{Subsistema Autenticação (\textit{Authentication})}
 
 \begin{minipage}{\textwidth}
     \centering
-    \includegraphics[width=1\textwidth]{images/class-diagrams/2-authentication.png}
+    \includegraphics[width=0.5\textwidth]{images/class-diagrams/2-authentication.png}
     \captionof{figure}{Subsistema Autenticação (\textit{Authentication})}
     \label{fig:5-2-subsistema_autenticacao}
 \end{minipage}
 
-\section{\textcolor{red}{TODO update Subsistema Horários (\textit{Schedules})}}
+\section{Subsistema Horários (\textit{Schedules})}
 
 \begin{minipage}{\textwidth}
     \centering
@@ -283,9 +283,33 @@ de leitura, escrita, atualização e eliminação de dados.
 
 \section{Arquitetura Geral com Persistência de Dados}
 
+A Arquitetura Geral permanece inalterada, pois a persistência de dados é uma camada
+adicional que não interfere com a lógica de negócio.
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/class-diagrams/1-arquitetura-geral.png}
+    \captionof{figure}{Arquitetura Geral com Persistência de Dados}
+    \label{fig:6-1-arquitetura_geral_com_persistencia_de_dados}
+\end{minipage}
+
 \section{Subsistema Autenticação (\textit{Authentication}) com Persistência de Dados}
 
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/daos/2-authentication.png}
+    \captionof{figure}{Subsistema Autenticação (\textit{Authentication}) com Persistência de Dados}
+    \label{fig:6-2-subsistema_autenticacao_com_persistencia_de_dados}
+\end{minipage}
+
 \section{Subsistema Horários (\textit{Schedules}) com Persistência de Dados}
+
+\begin{minipage}{\textwidth}
+    \centering
+    \includegraphics[width=1.5\textwidth, angle=270]{images/daos/3 - schedule.png}
+    \captionof{figure}{Subsistema Horários (\textit{Schedules}) com Persistência de Dados}
+    \label{fig:6-3-subsistema_horarios_com_persistencia_de_dados}
+\end{minipage}
 
 %==========================================================================
 % END DIAGRAMA DE CLASSES - DAOs
@@ -302,7 +326,7 @@ de leitura, escrita, atualização e eliminação de dados.
     \centering
     \includegraphics[width=1\textwidth]{images/packages-diagram.png}
     \captionof{figure}{Diagrama de Pacotes}
-    \label{fig:6-1-diagrama_de_pacotes}
+    \label{fig:7-1-diagrama_de_pacotes}
 \end{minipage}
 
 %==========================================================================
@@ -320,7 +344,7 @@ de leitura, escrita, atualização e eliminação de dados.
     \centering
     \includegraphics[width=1\textwidth]{images/sequence-diagrams/1-consultar-horario.png}
     \captionof{figure}{Diagrama de Sequência - Consultar Horário}
-    \label{fig:7-1-diagrama_de_sequencia_consultar_horario}
+    \label{fig:8-1-diagrama_de_sequencia_consultar_horario}
 \end{minipage}
 
 \vspace{1cm}
@@ -329,14 +353,14 @@ de leitura, escrita, atualização e eliminação de dados.
     \centering
     \includegraphics[width=1\textwidth]{images/sequence-diagrams/2-gerar-horarios.png}
     \captionof{figure}{Diagrama de Sequência - Gerar Horários}
-    \label{fig:7-2-diagrama_de_sequencia_gerar_horarios}
+    \label{fig:8-2-diagrama_de_sequencia_gerar_horarios}
 \end{minipage}
 
 \begin{minipage}{\textwidth}
     \centering
     \includegraphics[width=1\textwidth]{images/sequence-diagrams/3-importar-alunos.png}
     \captionof{figure}{Diagrama de Sequência - Importar Alunos}
-    \label{fig:7-3-diagrama_de_sequencia_importar_alunos}
+    \label{fig:8-3-diagrama_de_sequencia_importar_alunos}
 \end{minipage}
 
 %==========================================================================
@@ -354,7 +378,7 @@ de leitura, escrita, atualização e eliminação de dados.
     \centering
     \includegraphics[width=1\textwidth]{images/SchedulePlanner_db.png}
     \captionof{figure}{Base de Dados do Sistema}
-    \label{fig:8-1-base_de_dados_do_sistema}
+    \label{fig:9-1-base_de_dados_do_sistema}
 \end{minipage}
 
 

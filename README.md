@@ -14,4 +14,4 @@
 
 - [Código Fonte](./Fase%203/SchedulePlanner/)
 - [Relatório](./Fase%203/report/output/main.pdf)
-- [VPP]
+- [VPP](./Fase%203/DSS.vpp)

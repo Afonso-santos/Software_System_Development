@@ -60,6 +60,17 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
     }
 
+    public void AllocateAllStudents()
+    {
+        List<UC> ucs = _ucs.GetAllUCs();
+        // TODO create AllocationStatus
+
+        foreach (UC uc in ucs)
+        {
+
+        }
+    }
+
     public void RemoveStudentFromShift(string studentNum, string shiftNum)
     {
 

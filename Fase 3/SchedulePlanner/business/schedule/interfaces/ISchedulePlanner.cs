@@ -17,6 +17,7 @@ public interface ISchedulePlanner
     IEnumerable<string> GetClassrooms();
     void AddStudent(Student student);
     void AddStudentToShift(string studentId, string shiftId);
+    void AllocateAllStudents();
     void RemoveStudentFromShift(string studentId, string shiftId);
     void AddClassroom(Classroom classroom);
     void RemoveClassroom(string classroomId);
