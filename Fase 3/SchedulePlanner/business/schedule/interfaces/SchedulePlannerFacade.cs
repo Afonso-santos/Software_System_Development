@@ -64,7 +64,6 @@ public class SchedulePlannerFacade : ISchedulePlanner
     public void AllocateAllStudents()
     {
         List<UC> ucs = _ucs.GetAllUCs();
-        // TODO create AllocationStatus
 
         foreach (UC uc in ucs)
         {
@@ -79,12 +78,28 @@ public class SchedulePlannerFacade : ISchedulePlanner
             {
                 foreach (Shift shift in shifts)
                 {
-                    if (shift.Capacity <= 0) {
+                    if (shift.Capacity <= 0)
+                    {
                         continue;
                     }
 
-                    if (student.IsAvailableForShift(shift)) {
+                    if (student.IsAvailableForShift(shift))
+                    {
                         System.Console.WriteLine($"Allocating student {student.Number} to shift {shift.Number} of UC {uc.Code}");
+                        try
+                        {
+                            shift.EnrollStudentOnShift(student.Number);
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            // Shift is full
+                            System.Console.WriteLine(ex.Message);
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            // Student is already in the shift
+                            System.Console.WriteLine(ex.Message);
+                        }
                     }
                     else
                     {
@@ -133,7 +148,6 @@ public class SchedulePlannerFacade : ISchedulePlanner
         }
         _shifts.DeleteShift(uc, type, number);
     }
-    
 
     public void SetShiftClassroom(string shiftNum, string classroomNum)
     {
@@ -325,7 +339,8 @@ public class SchedulePlannerFacade : ISchedulePlanner
                 // Parse the shift type and number
                 var shiftNumber = 0;
                 var shiftType = "";
-                try {
+                try
+                {
                     // scrape the digits from the end of the string
                     int i;
                     for (i = shiftData.Shift.Length - 1; i >= 0; i--)
@@ -342,7 +357,9 @@ public class SchedulePlannerFacade : ISchedulePlanner
 
                     // the remaining string is the shift type
                     shiftType = shiftData.Shift.Substring(0, i + 1);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     Console.WriteLine($"Error parsing shift type and number: {ex.Message}");
                     continue;
                 }
@@ -480,7 +497,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
         _ucs.InsertUC(uc);
     }
 
-    public void RemoveUCS( string code)
+    public void RemoveUCS(string code)
     {
         _ucs.DeleteUC(code);
     }
@@ -523,5 +540,20 @@ public class SchedulePlannerFacade : ISchedulePlanner
             throw new ArgumentException("Student not found.");
         }
         return student.GetStudentEnrollments();
+    }
+
+
+    public string GetSchedule(string studentNumber)
+    {
+        var student = _students.GetStudentByNumber(studentNumber);
+
+        if (student == null)
+        {
+            return "Student not found.";
+        }
+
+        var enrollments = GetStudentEnrollments(studentNumber);
+
+        return string.Join("\n", enrollments.Select(e => e.ToString()));
     }
 }

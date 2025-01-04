@@ -2,15 +2,16 @@ namespace SchedulePlanner.ui.student;
 
 using SchedulePlanner.ui;
 using SchedulePlanner.business.schedule.interfaces;
-using SchedulePlanner.business.schedule.models;
 
 public class TextUI
 {
     private readonly ISchedulePlanner model;
+    private readonly string username;
 
-    public TextUI()
+    public TextUI(string username)
     {
         this.model = new SchedulePlannerFacade();
+        this.username = username;
     }
 
     public void RunMenu()
@@ -31,12 +32,11 @@ public class TextUI
     {
         try
         {
-            // TODO
-            Console.WriteLine("View schedule not implemented.");
-            // Console.WriteLine("Student number: ");
-            // var studentNumber = Console.ReadLine();
-            // var schedule = this.model.GetSchedule(studentNumber);
-            // Console.WriteLine(schedule);
+            var schedule = this.model.GetSchedule(username);
+
+            Console.WriteLine("\nYour calendar:");
+            Console.WriteLine(schedule);
+
         }
         catch (Exception e)
         {
@@ -48,8 +48,7 @@ public class TextUI
     {
         try
         {
-            // TODO
-            Console.WriteLine("Export schedule not implemented.");
+            Console.WriteLine("Export schedule not implemented. Similar Feature to View Schedule.");
             // Console.WriteLine("Student number: ");
             // var studentNumber = Console.ReadLine();
             // Console.WriteLine("File name: ");
@@ -63,35 +62,4 @@ public class TextUI
         }
     }
 
-    private void ImportStudents() {
-        try
-        {
-           // Importing students from csv file 
-            Console.WriteLine("Importing students from csv file");
-            Console.WriteLine("File name: ");
-            var fileName = Console.ReadLine();
-
-            if (string.IsNullOrEmpty(fileName))
-            {
-                Console.WriteLine("File name cannot be null or empty.");
-                return;
-            }
-
-            bool imported = this.model.ImportStudent(fileName);
-            if (imported)
-            {
-                Console.WriteLine("Students imported successfully.");
-            }
-            else
-            {
-                Console.WriteLine("No student imported. Please check the file and try again.");
-            }
-            
-
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error importing students: " + e.Message);
-        }
-    }
 }

@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS Enrollment (
     Student VARCHAR(20) NOT NULL,
     
     ShiftNum INT NOT NULL,
-    ShiftType ENUM('T', 'TP', 'P') NOT NULL,
+    ShiftType ENUM('T', 'TP', 'PL') NOT NULL,
     ShiftUC VARCHAR(50) NOT NULL,
 
     PRIMARY KEY (Student, ShiftNum, ShiftType, ShiftUC),

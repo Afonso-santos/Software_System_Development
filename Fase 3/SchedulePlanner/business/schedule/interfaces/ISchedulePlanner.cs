@@ -48,4 +48,5 @@ public interface ISchedulePlanner
 
     Shift? GetShift(string uc, ShiftType type, int number);
     IEnumerable<Shift> GetStudentEnrollments(string studentNumber);
+    string GetSchedule(string studentNumber);
 }

@@ -33,7 +33,7 @@ class Program
         }
         else
         {
-            var textUI = new SchedulePlanner.ui.student.TextUI();
+            var textUI = new SchedulePlanner.ui.student.TextUI(username);
             textUI.RunMenu();
         }
     }

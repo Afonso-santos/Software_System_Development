@@ -30,31 +30,19 @@ public class TextUI
             "UCS Operations",
             "Shift Operations",
             "Classroom Operations",
-            "Add Student to Shift",
-            "Add Students to Shifts Automatically",
-            "Remove Student from Shift",
-            "List Students in Shift",
             "Import Students",
             "Import Schedules",
             "Enrollement Operations"
         });
-
-        // menu.SetPreCondition(3, () => this.model.HasClassrooms());
-        // menu.SetPreCondition(4, () => this.model.HasStudents() && this.model.HasShifts());
-        // menu.SetPreCondition(5, () => this.model.HasShiftsWithStudents());
 
         menu.SetHandler(1, () => ManageStudents());
         menu.SetHandler(2, () => ManageCourses());
         menu.SetHandler(3, () => ManageUCS());
         menu.SetHandler(4, () => ManageShifts());
         menu.SetHandler(5, () => ManageClassrooms());
-        menu.SetHandler(6, () => AddStudentToShift());
-        menu.SetHandler(7, () => AllocateAllStudents());
-        menu.SetHandler(8, () => RemoveStudentFromShift());
-        menu.SetHandler(9, () => ListStudentsInShift());
-        menu.SetHandler(10, () => importStudentFromFile());
-        menu.SetHandler(11, () => ImportSchedules());
-        menu.SetHandler(12, () => ManageEnrollement());
+        menu.SetHandler(6, () => importStudentFromFile());
+        menu.SetHandler(7, () => ImportSchedules());
+        menu.SetHandler(8, () => ManageEnrollement());
 
         menu.Run(isMainMenu: true);
     }
@@ -403,35 +391,6 @@ public class TextUI
         }
     }
 
-    private void AddStudentToShift()
-    {
-        try
-        {
-            Console.WriteLine("Student number: ");
-            string? studentNumber = Console.ReadLine();
-            if (studentNumber == null)
-            {
-                Console.WriteLine("Student number cannot be empty.");
-                return;
-            }
-
-            Console.WriteLine("Shift number: ");
-            string? shiftNumber = Console.ReadLine();
-            if (shiftNumber == null)
-            {
-                Console.WriteLine("Shift number cannot be empty.");
-                return;
-            }
-
-            this.model.AddStudentToShift(studentNumber, shiftNumber);
-            Console.WriteLine("Student added to shift successfully.");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error adding student to shift: " + e.Message);
-        }
-    }
-
     private void AllocateAllStudents()
     {
         try
@@ -441,56 +400,6 @@ public class TextUI
         catch (Exception e)
         {
             Console.WriteLine("Error allocating students: " + e.Message);
-        }
-    }
-
-    private void RemoveStudentFromShift()
-    {
-        try
-        {
-            Console.WriteLine("Student number: ");
-            string? studentNumber = Console.ReadLine();
-            if (studentNumber == null)
-            {
-                Console.WriteLine("Student number cannot be empty.");
-                return;
-            }
-
-            Console.WriteLine("Shift number: ");
-            string? shiftNumber = Console.ReadLine();
-            if (shiftNumber == null)
-            {
-                Console.WriteLine("Shift number cannot be empty.");
-                return;
-            }
-
-            this.model.RemoveStudentFromShift(studentNumber, shiftNumber);
-            Console.WriteLine("Student removed from shift successfully.");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error removing student from shift: " + e.Message);
-        }
-    }
-
-    private void ListStudentsInShift()
-    {
-        try
-        {
-            Console.WriteLine("Shift number: ");
-            string? shiftNumber = Console.ReadLine();
-            if (shiftNumber == null)
-            {
-                Console.WriteLine("Shift number cannot be empty.");
-                return;
-            }
-
-            IEnumerable<string> students = this.model.GetStudentsInShift(shiftNumber);
-            Console.WriteLine(string.Join("\n", students));
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error listing students in shift: " + e.Message);
         }
     }
 
@@ -741,13 +650,15 @@ public class TextUI
         var menu = new Menu("Enrollement Management", new[]
         {
             "Enroll Student",
+            "Enroll Students Automatically",
             "Unenroll Student",
-            "List Enrolled Students"
+            "List Student Enrollments"
         });
 
         menu.SetHandler(1, () => EnrollStudent());
-        menu.SetHandler(2, () => UnenrollStudent());
-        menu.SetHandler(3, () => ListEnrolledStudents());
+        menu.SetHandler(2, () => AllocateAllStudents());
+        menu.SetHandler(3, () => UnenrollStudent());
+        menu.SetHandler(4, () => ListStudentEnrollments());
 
         menu.Run();
     }
@@ -862,31 +773,30 @@ public class TextUI
         }
     }
 
-    private void ListEnrolledStudents()
+    private void ListStudentEnrollments()
     {
         try
         {
             Console.WriteLine("Student number: ");
-            string? studentNumber = Console.ReadLine();
-            if (studentNumber == null)
+            var studentNumber = Console.ReadLine();
+
+            if (!string.IsNullOrEmpty(studentNumber))
             {
-                Console.WriteLine("Student number cannot be empty.");
+                var schedule = this.model.GetSchedule(studentNumber);
+
+                Console.WriteLine("\nEnrolled shifts for student " + studentNumber + ":");
+                Console.WriteLine(schedule);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input!");
                 return;
             }
 
-            if (!this.model.StudentExists(studentNumber))
-            {
-                Console.WriteLine("This student number does not exist!");
-                return;
-            }
-
-            var enrollments = this.model.GetStudentEnrollments(studentNumber);
-            Console.WriteLine("Enrolled shifts for student " + studentNumber + ":");
-            Console.WriteLine(string.Join("\n", enrollments.Select(e => e.ToString())));
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error listing enrolled shifts: " + e.Message);
+            Console.WriteLine("Error viewing schedule: " + e.Message);
         }
     }
 
