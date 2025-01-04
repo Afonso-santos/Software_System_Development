@@ -128,7 +128,7 @@ namespace SchedulePlanner.Data
             connection.Open();
             var query = @"UPDATE Student 
                               SET Name = @Name, Email = @Email, Statute = @Statute, 
-                                  Year = @Year, Semester = @Semester, Course = @Course, 
+                                  Year = @Year, Course = @Course, 
                                   PartialMean = @PartialMean 
                               WHERE Num = @Num";
 

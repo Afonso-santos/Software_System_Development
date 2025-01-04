@@ -127,7 +127,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
     /// </summary>
     /// <param name="fileName">The path to the CSV file.</param>
     /// <returns>True if the operation succeeds, false otherwise.</returns>
-    public bool ImportStudentsAndUCs(string fileName)
+    public bool ImportStudent(string fileName)
     {
         try
         {
@@ -138,6 +138,8 @@ public class SchedulePlannerFacade : ISchedulePlanner
                 {
                     throw new InvalidOperationException("The file is empty.");
                 }
+
+                var random = new Random();
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -150,36 +152,19 @@ public class SchedulePlannerFacade : ISchedulePlanner
                         continue;
                     }
 
-                    // Retrieves course information.
-                    var courseCode = fields[3];
-                    var courseName = fields[4];
+                    var course = fields[4];
 
-                    // Ensures the course exists in the database; adds it if not.
-                    if (!_courses.CourseExists(courseCode))
+                    if (!int.TryParse(fields[6], out var year))
                     {
-                        var course = _courses.GetCourseByName(courseCode);
-                        course = new Course(courseCode);
-                        _courses.InsertCourse(course);
+                        Console.WriteLine($"Invalid year value: {fields[6]}");
+                        continue; // Skip the current row
                     }
-
-                    // Retrieves UC (Curricular Unit) information.
-                    var ucCode = fields[7];
-                    var ucName = fields[8];
-                    var yearOfUC = Convert.ToInt32(fields[6]);
-
-                    // Ensures the UC exists in the database; adds it if not.
-                    var uc = _ucs.GetUCByCode(ucCode);
-                    if (uc is null)
-                    {
-                        // uc = new UC(ucCode, ucName, courseCode, null);
-                        // _ucs.AddUC(uc);
-                    }
-
 
                     var studentNumber = fields[11];
                     var studentName = fields[12];
                     var studentEmail = fields[13];
                     var specialRegime = fields[15];
+                    var partialMean = random.Next(3, 20);
 
                     // Determines if the student has a special regime.
                     var statute = !string.IsNullOrWhiteSpace(specialRegime);
@@ -190,9 +175,9 @@ public class SchedulePlannerFacade : ISchedulePlanner
                         studentName,
                         studentEmail,
                         statute,
-                        year: yearOfUC, // Sets the student's year based on the UC.
-                        course: courseCode,
-                        partialMean: 0.0f // Default value.
+                        year,
+                        course,
+                        partialMean
                     );
 
                     // Inserts or updates the student in the database.
@@ -405,6 +390,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
             return false;
         }
     }
+
 
     private string GetDayOfWeek(int day)
     {

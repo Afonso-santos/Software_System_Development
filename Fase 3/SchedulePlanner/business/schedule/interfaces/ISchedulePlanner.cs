@@ -24,7 +24,7 @@ public interface ISchedulePlanner
     IEnumerable<string> GetStudentsInShift(string shiftId);
     Student? FindStudent(string studentId);
 
-    bool ImportStudentsAndUCs(string filePath);
+    bool ImportStudent(string filePath);
     bool ImportShifts(string filePath, string courseName);
 
     void AddUCS(UC uc);
@@ -45,6 +45,5 @@ public interface ISchedulePlanner
     void UpdateShift(Shift shift);
     void UpdateClassroom(Classroom classroom);
     IEnumerable<string> GetShiftsInClassroom(string classroomId);
-    
-}
 
+}
