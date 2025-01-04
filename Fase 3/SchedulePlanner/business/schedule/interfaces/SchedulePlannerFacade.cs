@@ -6,6 +6,7 @@ using System.Linq;
 using SchedulePlanner.business.schedule.models;
 using SchedulePlanner.Data;
 using Newtonsoft.Json;
+
 using static SchedulePlanner.business.schedule.models.Shift;
 
 public class SchedulePlannerFacade : ISchedulePlanner
@@ -82,9 +83,7 @@ public class SchedulePlannerFacade : ISchedulePlanner
                         continue;
                     }
 
-                    // TODO student.isAvailableForShift(shift)
-                    // if (student.isAvailableForShift(shift)) {
-                    if (true) {
+                    if (student.IsAvailableForShift(shift)) {
                         System.Console.WriteLine($"Allocating student {student.Number} to shift {shift.Number} of UC {uc.Code}");
                     }
                     else
